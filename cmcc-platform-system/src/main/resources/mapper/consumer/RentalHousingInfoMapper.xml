@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.system.mapper.RentalHousingInfoMapper">
+    
+    <resultMap type="RentalHousingInfo" id="RentalHousingInfoResult">
+        <result property="id"    column="id"    />
+        <result property="belongingPlace"    column="belonging_place"    />
+        <result property="community"    column="community"    />
+        <result property="addressInfo"    column="address_info"    />
+        <result property="hostName"    column="host_name"    />
+        <result property="hostCardId"    column="host_card_id"    />
+        <result property="hostTel"    column="host_tel"    />
+        <result property="rentalBeginDate"    column="rental_begin_date"    />
+        <result property="rentalEndDate"    column="rental_end_date"    />
+        <result property="tenantName"    column="tenant_name"    />
+        <result property="tenantCardId"    column="tenant_card_id"    />
+        <result property="tenantTel"    column="tenant_tel"    />
+        <result property="recordDate"    column="record_date"    />
+        <result property="localPoliceStation"    column="local_police_station"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="recordType"    column="record_type"    />
+        <result property="attachmentOne"    column="attachment_one"    />
+        <result property="attachmentTwo"    column="attachment_two"    />
+    </resultMap>
+
+    <resultMap id="RentalHousingInfoTenantUserInfoResult" type="RentalHousingInfo" extends="RentalHousingInfoResult">
+        <collection property="tenantUserInfoList" notNullColumn="sub_id" javaType="java.util.List" resultMap="TenantUserInfoResult" />
+    </resultMap>
+
+    <resultMap type="TenantUserInfo" id="TenantUserInfoResult">
+        <result property="id"    column="sub_id"    />
+        <result property="rentalHousingId"    column="sub_rental_housing_id"    />
+        <result property="tenantName"    column="sub_tenant_name"    />
+        <result property="tenantCardId"    column="sub_tenant_card_id"    />
+        <result property="tenantTel"    column="sub_tenant_tel"    />
+        <result property="orderId"    column="sub_order_id"    />
+    </resultMap>
+
+    <sql id="selectRentalHousingInfoVo">
+        select id, belonging_place, community, address_info, host_name, host_card_id, host_tel, rental_begin_date, rental_end_date, tenant_name, tenant_card_id, tenant_tel, record_date, local_police_station, dept_id, record_type, attachment_one, attachment_two from rental_housing_info
+    </sql>
+
+    <select id="selectRentalHousingInfoList" parameterType="RentalHousingInfo" resultMap="RentalHousingInfoResult">
+        <include refid="selectRentalHousingInfoVo"/>
+        <where>  
+            <if test="belongingPlace != null  and belongingPlace != ''"> and belonging_place = #{belongingPlace}</if>
+            <if test="community != null  and community != ''"> and community = #{community}</if>
+            <if test="addressInfo != null  and addressInfo != ''"> and address_info = #{addressInfo}</if>
+            <if test="hostName != null  and hostName != ''"> and host_name like concat('%', #{hostName}, '%')</if>
+            <if test="hostCardId != null  and hostCardId != ''"> and host_card_id like concat('%', #{hostCardId}, '%')</if>
+            <if test="hostTel != null  and hostTel != ''"> and host_tel like concat('%', #{hostTel}, '%')</if>
+            <if test="params.beginRentalBeginDate != null and params.beginRentalBeginDate != '' and params.endRentalBeginDate != null and params.endRentalBeginDate != ''"> and rental_begin_date between #{params.beginRentalBeginDate} and #{params.endRentalBeginDate}</if>
+            <if test="params.beginRentalEndDate != null and params.beginRentalEndDate != '' and params.endRentalEndDate != null and params.endRentalEndDate != ''"> and rental_end_date between #{params.beginRentalEndDate} and #{params.endRentalEndDate}</if>
+            <if test="tenantName != null  and tenantName != ''"> and tenant_name like concat('%', #{tenantName}, '%')</if>
+            <if test="tenantCardId != null  and tenantCardId != ''"> and tenant_card_id like concat('%', #{tenantCardId}, '%')</if>
+            <if test="tenantTel != null  and tenantTel != ''"> and tenant_tel like concat('%', #{tenantTel}, '%')</if>
+            <if test="params.beginRecordDate != null and params.beginRecordDate != '' and params.endRecordDate != null and params.endRecordDate != ''"> and record_date between #{params.beginRecordDate} and #{params.endRecordDate}</if>
+            <if test="localPoliceStation != null  and localPoliceStation != ''"> and local_police_station = #{localPoliceStation}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="recordType != null  and recordType != ''"> and record_type = #{recordType}</if>
+            <if test="attachmentOne != null  and attachmentOne != ''"> and attachment_one = #{attachmentOne}</if>
+            <if test="attachmentTwo != null  and attachmentTwo != ''"> and attachment_two = #{attachmentTwo}</if>
+        </where>
+    </select>
+    
+    <select id="selectRentalHousingInfoById" parameterType="Long" resultMap="RentalHousingInfoTenantUserInfoResult">
+        select a.id, a.belonging_place, a.community, a.address_info, a.host_name, a.host_card_id, a.host_tel, a.rental_begin_date, a.rental_end_date, a.tenant_name, a.tenant_card_id, a.tenant_tel, a.record_date, a.local_police_station, a.dept_id, a.record_type, a.attachment_one, a.attachment_two,
+ b.id as sub_id, b.rental_housing_id as sub_rental_housing_id, b.tenant_name as sub_tenant_name, b.tenant_card_id as sub_tenant_card_id, b.tenant_tel as sub_tenant_tel, b.order_id as sub_order_id
+        from rental_housing_info a
+        left join tenant_user_info b on b.rental_housing_id = a.id
+        where a.id = #{id}
+    </select>
+        
+    <insert id="insertRentalHousingInfo" parameterType="RentalHousingInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into rental_housing_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="belongingPlace != null">belonging_place,</if>
+            <if test="community != null">community,</if>
+            <if test="addressInfo != null">address_info,</if>
+            <if test="hostName != null">host_name,</if>
+            <if test="hostCardId != null">host_card_id,</if>
+            <if test="hostTel != null">host_tel,</if>
+            <if test="rentalBeginDate != null">rental_begin_date,</if>
+            <if test="rentalEndDate != null">rental_end_date,</if>
+            <if test="tenantName != null">tenant_name,</if>
+            <if test="tenantCardId != null">tenant_card_id,</if>
+            <if test="tenantTel != null">tenant_tel,</if>
+            <if test="recordDate != null">record_date,</if>
+            <if test="localPoliceStation != null">local_police_station,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="recordType != null">record_type,</if>
+            <if test="attachmentOne != null">attachment_one,</if>
+            <if test="attachmentTwo != null">attachment_two,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="belongingPlace != null">#{belongingPlace},</if>
+            <if test="community != null">#{community},</if>
+            <if test="addressInfo != null">#{addressInfo},</if>
+            <if test="hostName != null">#{hostName},</if>
+            <if test="hostCardId != null">#{hostCardId},</if>
+            <if test="hostTel != null">#{hostTel},</if>
+            <if test="rentalBeginDate != null">#{rentalBeginDate},</if>
+            <if test="rentalEndDate != null">#{rentalEndDate},</if>
+            <if test="tenantName != null">#{tenantName},</if>
+            <if test="tenantCardId != null">#{tenantCardId},</if>
+            <if test="tenantTel != null">#{tenantTel},</if>
+            <if test="recordDate != null">#{recordDate},</if>
+            <if test="localPoliceStation != null">#{localPoliceStation},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="recordType != null">#{recordType},</if>
+            <if test="attachmentOne != null">#{attachmentOne},</if>
+            <if test="attachmentTwo != null">#{attachmentTwo},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRentalHousingInfo" parameterType="RentalHousingInfo">
+        update rental_housing_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="belongingPlace != null">belonging_place = #{belongingPlace},</if>
+            <if test="community != null">community = #{community},</if>
+            <if test="addressInfo != null">address_info = #{addressInfo},</if>
+            <if test="hostName != null">host_name = #{hostName},</if>
+            <if test="hostCardId != null">host_card_id = #{hostCardId},</if>
+            <if test="hostTel != null">host_tel = #{hostTel},</if>
+            <if test="rentalBeginDate != null">rental_begin_date = #{rentalBeginDate},</if>
+            <if test="rentalEndDate != null">rental_end_date = #{rentalEndDate},</if>
+            <if test="tenantName != null">tenant_name = #{tenantName},</if>
+            <if test="tenantCardId != null">tenant_card_id = #{tenantCardId},</if>
+            <if test="tenantTel != null">tenant_tel = #{tenantTel},</if>
+            <if test="recordDate != null">record_date = #{recordDate},</if>
+            <if test="localPoliceStation != null">local_police_station = #{localPoliceStation},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="recordType != null">record_type = #{recordType},</if>
+            <if test="attachmentOne != null">attachment_one = #{attachmentOne},</if>
+            <if test="attachmentTwo != null">attachment_two = #{attachmentTwo},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRentalHousingInfoById" parameterType="Long">
+        delete from rental_housing_info where id = #{id}
+    </delete>
+
+    <delete id="deleteRentalHousingInfoByIds" parameterType="String">
+        delete from rental_housing_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteTenantUserInfoByRentalHousingIds" parameterType="String">
+        delete from tenant_user_info where rental_housing_id in 
+        <foreach item="rentalHousingId" collection="array" open="(" separator="," close=")">
+            #{rentalHousingId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteTenantUserInfoByRentalHousingId" parameterType="Long">
+        delete from tenant_user_info where rental_housing_id = #{rentalHousingId}
+    </delete>
+
+    <insert id="batchTenantUserInfo">
+        insert into tenant_user_info( id, rental_housing_id, tenant_name, tenant_card_id, tenant_tel, order_id) values
+		<foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.id}, #{item.rentalHousingId}, #{item.tenantName}, #{item.tenantCardId}, #{item.tenantTel}, #{item.orderId})
+        </foreach>
+    </insert>
+</mapper>

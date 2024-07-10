@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.system.mapper.CmccUserTaskMapper">
+    
+    <resultMap type="CmccUserTask" id="CmccUserTaskResult">
+        <result property="id"    column="id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="groupId"    column="group_id"    />
+        <result property="groupName"    column="group_name"    />
+        <result property="taskStatus"    column="task_status"    />
+        <result property="groupType"    column="group_type"    />
+        <result property="createUserId"    column="create_user_id"    />
+        <result property="createUserName"    column="create_user_name"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="taskBeginTime"    column="task_begin_time"    />
+        <result property="taskEndTime"    column="task_end_time"    />
+        <result property="taskType"    column="task_type"    />
+    </resultMap>
+
+    <resultMap type="AppGroupTaskList" id="AppGroupTaskListResult">
+        <result property="groupId"    column="group_id"    />
+        <result property="groupName"    column="group_name"    />
+        <result property="groupType"    column="group_type"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="total"    column="total"    />
+        <result property="interviewTotal"    column="interview_total"    />
+        <result property="recordDate"    column="record_date"    />
+        <result property="taskEndTime"    column="task_end_time"    />
+        <result property="taskBeginTime"    column="task_begin_time"    />
+    </resultMap>
+
+    <resultMap type="AppEnterpriseTask" id="AppEnterpriseTaskResult">
+        <result property="id"    column="id"    />
+        <result property="groupName"    column="group_name"    />
+        <result property="groupId"    column="group_id"    />
+        <result property="enterpriseName"    column="enterprise_name"    />
+        <result property="enterpriseAddr"    column="enterprise_addr"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="customerTel"    column="customer_tel"    />
+        <result property="customerPosition"    column="customer_position"    />
+        <result property="enterpriseId"    column="enterprise_id"    />
+        <result property="interviewCount"    column="interview_count"    />
+        <result property="interviewStatus"    column="interview_status"    />
+    </resultMap>
+
+    <sql id="selectCmccUserTaskVo">
+        select id, dept_id, dept_name, user_id, user_name, group_id, group_name, task_status, group_type, create_user_id, create_user_name, create_time, task_begin_time, task_end_time, task_type from cmcc_user_task
+    </sql>
+
+    <select id="selectCmccEnterpriseTsk" parameterType="map" resultMap="AppEnterpriseTaskResult">
+        SELECT
+        t1.*,
+        t2.* ,
+        ifnull(t2.interview_count, 0) interview_status
+        FROM
+        ( SELECT id, group_id, group_name, enterprise_name, dept_name, enterprise_addr, customer_name, customer_tel,customer_position FROM cmcc_enterprise_info WHERE group_id = #{groupId} AND enterprise_status = 0 ) t1
+        LEFT JOIN (
+        SELECT
+        enterprise_id,
+        count( 1 ) interview_count
+        FROM
+        cmcc_interview_base
+        WHERE
+        user_id = #{userId}
+        AND record_date  &gt;= #{weekBeginDate}
+        AND record_date &lt;=  #{weekEndDate}
+        GROUP BY
+        enterprise_id
+        ) t2 ON t1.id = t2.enterprise_id
+        <where>
+            <if test='interviewStatus != null  and interviewStatus == "0"'> and t2.enterprise_id is null</if>
+            <if test='interviewStatus != null  and interviewStatus == "1"'> and t2.enterprise_id is not null</if>
+            <if test="queryName != null  and queryName != ''"> and t1.enterprise_name like concat('%', #{queryName}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectCmccUserTask" parameterType="map" resultMap="AppGroupTaskListResult">
+        SELECT
+        t4.group_id,
+        max( t4.group_name ) group_name,
+        max(t4.group_type) group_type,
+        max(t4.dept_name) dept_name,
+        count( 1 ) AS total,
+        sum(t4.enterprise_flag) as interview_total,
+        max(t4.record_date)  record_date,
+        min(t4.task_end_time) task_end_time,
+        max(t4.task_begin_time) task_begin_time
+        FROM
+        (
+        SELECT
+        t.user_id,
+        t.task_begin_time,
+		t.task_end_time,
+        t.group_type,
+        t2.*,
+        (case  when t3.enterprise_id  is null then 0 else 1 end) as enterprise_flag,
+        t3.record_date
+        FROM
+        cmcc_user_task t
+        LEFT JOIN cmcc_enterprise_info t2 ON t.group_id = t2.group_id
+        LEFT JOIN ( SELECT enterprise_id ,max(record_date) record_date FROM cmcc_interview_base WHERE record_date  &gt;= #{weekBeginDate} AND record_date &lt;=  #{weekEndDate} group by enterprise_id) t3 ON t2.id = t3.enterprise_id
+        WHERE
+        t.user_id = #{userId}
+        AND t2.enterprise_status = 0
+        AND t.task_begin_time &lt;= #{currentDate} AND t.task_end_time &gt; #{currentDate}
+        ) t4
+        GROUP BY
+        t4.group_id  order by task_end_time
+    </select>
+
+    <select id="selectCmccUserTaskList" parameterType="CmccUserTask" resultMap="CmccUserTaskResult">
+        <include refid="selectCmccUserTaskVo"/>
+        <where>  
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="groupId != null "> and group_id = #{groupId}</if>
+            <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
+            <if test="taskStatus != null  and taskStatus != ''"> and task_status = #{taskStatus}</if>
+            <if test="groupType != null  and groupType != ''"> and group_type = #{groupType}</if>
+            <if test="createUserId != null "> and create_user_id = #{createUserId}</if>
+            <if test="createUserName != null  and createUserName != ''"> and create_user_name like concat('%', #{createUserName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectCmccUserTaskById" parameterType="Long" resultMap="CmccUserTaskResult">
+        <include refid="selectCmccUserTaskVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCmccUserTask" parameterType="CmccUserTask" useGeneratedKeys="true" keyProperty="id">
+        insert into cmcc_user_task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">dept_id,</if>
+            <if test="deptName != null">dept_name,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="groupId != null">group_id,</if>
+            <if test="groupName != null">group_name,</if>
+            <if test="taskStatus != null">task_status,</if>
+            <if test="groupType != null">group_type,</if>
+            <if test="createUserId != null">create_user_id,</if>
+            <if test="createUserName != null">create_user_name,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="taskBeginTime != null">task_begin_time,</if>
+            <if test="taskEndTime != null">task_end_time,</if>
+            <if test="taskType != null">task_type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">#{deptId},</if>
+            <if test="deptName != null">#{deptName},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="groupId != null">#{groupId},</if>
+            <if test="groupName != null">#{groupName},</if>
+            <if test="taskStatus != null">#{taskStatus},</if>
+            <if test="groupType != null">#{groupType},</if>
+            <if test="createUserId != null">#{createUserId},</if>
+            <if test="createUserName != null">#{createUserName},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="taskBeginTime != null">#{taskBeginTime},</if>
+            <if test="taskEndTime != null">#{taskEndTime},</if>
+            <if test="taskType != null">#{taskType},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCmccUserTask" parameterType="CmccUserTask">
+        update cmcc_user_task
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="deptName != null">dept_name = #{deptName},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="groupId != null">group_id = #{groupId},</if>
+            <if test="groupName != null">group_name = #{groupName},</if>
+            <if test="taskStatus != null">task_status = #{taskStatus},</if>
+            <if test="groupType != null">group_type = #{groupType},</if>
+            <if test="createUserId != null">create_user_id = #{createUserId},</if>
+            <if test="createUserName != null">create_user_name = #{createUserName},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="taskBeginTime != null">task_begin_time = #{taskBeginTime},</if>
+            <if test="taskEndTime != null">task_end_time = #{taskEndTime},</if>
+            <if test="taskType != null">task_type = #{taskType},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCmccUserTaskById" parameterType="Long">
+        delete from cmcc_user_task where id = #{id}
+    </delete>
+
+    <delete id="deleteCmccUserTaskByIds" parameterType="String">
+        delete from cmcc_user_task where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="insertBatchUserTask" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        insert into cmcc_user_task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            dept_id,
+            dept_name,
+            user_id,
+            user_name,
+            group_id,
+            group_name,
+            task_status,
+            group_type,
+            create_user_id,
+            create_user_name,
+            create_time,
+            task_begin_time,
+            task_end_time,
+            task_type
+        </trim>
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="item.deptId != null">#{item.deptId},</if>
+                <if test="item.deptName != null">#{item.deptName},</if>
+                <if test="item.userId != null">#{item.userId},</if>
+                <if test="item.userName != null">#{item.userName},</if>
+                <if test="item.groupId != null">#{item.groupId},</if>
+                <if test="item.groupName != null">#{item.groupName},</if>
+                <if test="item.taskStatus != null">#{item.taskStatus},</if>
+                <if test="item.groupType != null">#{item.groupType},</if>
+                <if test="item.createUserId != null">#{item.createUserId},</if>
+                <if test="item.createUserName != null">#{item.createUserName},</if>
+                <if test="item.createTime != null">#{item.createTime},</if>
+                <if test="item.taskBeginTime != null">#{item.taskBeginTime},</if>
+                <if test="item.taskEndTime != null">#{item.taskEndTime},</if>
+                <if test="item.taskType != null">#{item.taskType},</if>
+            </trim>
+        </foreach>
+    </insert>
+</mapper>

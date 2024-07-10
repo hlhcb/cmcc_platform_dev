@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.system.mapper.CmccGroupInfoMapper">
+    
+    <resultMap type="CmccGroupInfo" id="CmccGroupInfoResult">
+        <result property="id"    column="id"    />
+        <result property="groupName"    column="group_name"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="groupType"    column="group_type"    />
+        <result property="groupAddr"    column="group_addr"    />
+    </resultMap>
+
+    <sql id="selectCmccGroupInfoVo">
+        select id, group_name, dept_id, dept_name, group_type, group_addr from cmcc_group_info
+    </sql>
+
+    <select id="selectCmccGroupInfoList" parameterType="CmccGroupInfo" resultMap="CmccGroupInfoResult">
+        <include refid="selectCmccGroupInfoVo"/>
+        <where>  
+            <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="groupType != null  and groupType != ''"> and group_type = #{groupType}</if>
+        </where>
+    </select>
+    
+    <select id="selectCmccGroupInfoById" parameterType="Long" resultMap="CmccGroupInfoResult">
+        <include refid="selectCmccGroupInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCmccGroupInfo" parameterType="CmccGroupInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into cmcc_group_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="groupName != null">group_name,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="deptName != null">dept_name,</if>
+            <if test="groupType != null">group_type,</if>
+            <if test="groupAddr != null">group_addr,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="groupName != null">#{groupName},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="deptName != null">#{deptName},</if>
+            <if test="groupType != null">#{groupType},</if>
+            <if test="groupAddr != null">#{groupAddr},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCmccGroupInfo" parameterType="CmccGroupInfo">
+        update cmcc_group_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="groupName != null">group_name = #{groupName},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="deptName != null">dept_name = #{deptName},</if>
+            <if test="groupType != null">group_type = #{groupType},</if>
+            <if test="groupAddr != null">group_addr = #{groupAddr},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCmccGroupInfoById" parameterType="Long">
+        delete from cmcc_group_info where id = #{id}
+    </delete>
+
+    <delete id="deleteCmccGroupInfoByIds" parameterType="String">
+        delete from cmcc_group_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

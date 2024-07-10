@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.system.mapper.TaskSchedulingInfoMapper">
+    
+    <resultMap type="TaskSchedulingInfo" id="TaskSchedulingInfoResult">
+        <result property="id"    column="id"    />
+        <result property="taskDate"    column="task_date"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="taskStatus"    column="task_status"    />
+        <result property="unionUserId"    column="union_user_id"    />
+        <result property="unionUserName"    column="union_user_name"    />
+    </resultMap>
+
+    <sql id="selectTaskSchedulingInfoVo">
+        select id, task_date, user_id, user_name, dept_id, dept_name, task_status, union_user_id, union_user_name from task_scheduling_info
+    </sql>
+
+    <select id="selectTaskSchedulingInfoList" parameterType="TaskSchedulingInfo" resultMap="TaskSchedulingInfoResult">
+        <include refid="selectTaskSchedulingInfoVo"/>
+        <where>  
+            <if test="taskDate != null "> and task_date = #{taskDate}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="taskStatus != null "> and task_status = #{taskStatus}</if>
+            <if test="unionUserId != null "> and union_user_id = #{unionUserId}</if>
+            <if test="unionUserName != null  and unionUserName != ''"> and union_user_name like concat('%', #{unionUserName}, '%')</if>
+            <if test="beginTaskDate != null "> and task_date &gt;= #{beginTaskDate}</if>
+            <if test="endTaskDate != null "> and task_date &lt;= #{endTaskDate}</if>
+        </where>
+        order by task_date
+    </select>
+    
+    <select id="selectTaskSchedulingInfoById" parameterType="Long" resultMap="TaskSchedulingInfoResult">
+        <include refid="selectTaskSchedulingInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTaskSchedulingInfo" parameterType="TaskSchedulingInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into task_scheduling_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="taskDate != null">task_date,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="deptName != null">dept_name,</if>
+            <if test="taskStatus != null">task_status,</if>
+            <if test="unionUserId != null">union_user_id,</if>
+            <if test="unionUserName != null">union_user_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="taskDate != null">#{taskDate},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="deptName != null">#{deptName},</if>
+            <if test="taskStatus != null">#{taskStatus},</if>
+            <if test="unionUserId != null">#{unionUserId},</if>
+            <if test="unionUserName != null">#{unionUserName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTaskSchedulingInfo" parameterType="TaskSchedulingInfo">
+        update task_scheduling_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskDate != null">task_date = #{taskDate},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="deptName != null">dept_name = #{deptName},</if>
+            <if test="taskStatus != null">task_status = #{taskStatus},</if>
+            <if test="unionUserId != null">union_user_id = #{unionUserId},</if>
+            <if test="unionUserName != null">union_user_name = #{unionUserName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTaskSchedulingInfoById" parameterType="Long">
+        delete from task_scheduling_info where id = #{id}
+    </delete>
+
+    <delete id="deleteTaskSchedulingInfoByIds" parameterType="String">
+        delete from task_scheduling_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

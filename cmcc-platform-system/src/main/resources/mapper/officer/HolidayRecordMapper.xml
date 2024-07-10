@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.system.mapper.HolidayRecordMapper">
+    
+    <resultMap type="HolidayRecord" id="HolidayRecordResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="beginTime"    column="begin_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="holidayStatus"    column="holiday_status"    />
+    </resultMap>
+
+    <sql id="selectHolidayRecordVo">
+        select id, user_id, user_name, begin_time, end_time, holiday_status from holiday_record
+    </sql>
+
+    <select id="selectHolidayRecordList" parameterType="HolidayRecord" resultMap="HolidayRecordResult">
+        <include refid="selectHolidayRecordVo"/>
+        <where>  
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="beginTime != null "> and begin_time &gt;= #{beginTime}</if>
+            <if test="endTime != null "> and end_time &lt;= #{endTime}</if>
+            <if test="holidayStatus != null  and holidayStatus != ''"> and holiday_status = #{holidayStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectHolidayRecordById" parameterType="Long" resultMap="HolidayRecordResult">
+        <include refid="selectHolidayRecordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertHolidayRecord" parameterType="HolidayRecord">
+        insert into holiday_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="beginTime != null">begin_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="holidayStatus != null">holiday_status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="beginTime != null">#{beginTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="holidayStatus != null">#{holidayStatus},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHolidayRecord" parameterType="HolidayRecord">
+        update holiday_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="beginTime != null">begin_time = #{beginTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="holidayStatus != null">holiday_status = #{holidayStatus},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHolidayRecordById" parameterType="Long">
+        delete from holiday_record where id = #{id}
+    </delete>
+
+    <delete id="deleteHolidayRecordByIds" parameterType="String">
+        delete from holiday_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

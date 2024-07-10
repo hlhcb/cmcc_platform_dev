@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.system.mapper.InspectionWorkRecordMapper">
+    
+    <resultMap type="InspectionWorkRecord" id="InspectionWorkRecordResult">
+        <result property="id"    column="id"    />
+        <result property="workId"    column="work_id"    />
+        <result property="workType"    column="work_type"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="workStatus"    column="work_status"    />
+        <result property="unionId"    column="union_id"    />
+        <result property="unionName"    column="union_name"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="taskUserId"    column="task_user_id"    />
+        <result property="taskUserName"    column="task_user_name"    />
+        <result property="accpetUserId"    column="accpet_user_id"    />
+        <result property="accpetUserName"    column="accpet_user_name"    />
+        <result property="troubleInfo"    column="trouble_info"    />
+        <result property="attachmentOne"    column="attachment_one"    />
+        <result property="attachmentTwo"    column="attachment_two"    />
+        <result property="accpetTime"    column="accpet_time"    />
+        <result property="resultInfo"    column="result_info"    />
+        <result property="returnAttachmentOne"    column="return_attachment_one"    />
+        <result property="returnAttachmentTwo"    column="return_attachment_two"    />
+        <result property="dealTime"    column="deal_time"    />
+        <result property="address"    column="address"    />
+        <result property="transferFlag"    column="transfer_flag"    />
+        <result property="detailPosition"    column="detail_position"    />
+        <result property="unionDeptId"    column="union_dept_id"    />
+        <result property="unionDeptName"    column="union_dept_name"    />
+        <result property="changeUserId"    column="change_user_id"    />
+        <result property="changeUserName"    column="change_user_name"    />
+        <result property="changeDeptId"    column="change_dept_id"    />
+        <result property="changeDeptName"    column="change_dept_name"    />
+    </resultMap>
+
+    <resultMap type="TypeWorkRecord" id="TypeWorkRecordResult">
+        <result property="workType"    column="work_type"    />
+        <result property="totalCount"    column="total_count"    />
+    </resultMap>
+
+    <resultMap type="StatusWorkRecord" id="StatusWorkRecordResult">
+        <result property="workStatus"    column="work_status"    />
+        <result property="totalCount"    column="total_count"    />
+    </resultMap>
+
+    <sql id="selectInspectionWorkRecordVo">
+        select id, work_id, work_type, dept_id, dept_name, work_status, union_id, union_name, task_id, task_user_id, task_user_name, accpet_user_id, accpet_user_name, trouble_info, attachment_one, attachment_two, accpet_time, result_info, return_attachment_one, return_attachment_two, deal_time, address, transfer_flag, detail_position, union_dept_id, union_dept_name, change_user_id, change_user_name, change_dept_id, change_dept_name from inspection_work_record
+    </sql>
+
+    <select id="selectAppCountByType" parameterType="map" resultMap="TypeWorkRecordResult">
+        SELECT
+            work_type,
+            count( 1 ) AS total_count
+        FROM
+            `inspection_work_record`
+        WHERE
+
+            union_id = #{unionId}
+        <if test="accpetBeginTime != null  and accpetBeginTime != ''"> and accpet_time &gt;= #{accpetBeginTime}</if>
+        <if test="accpetEndTime !=null  and accpetEndTime != ''"> and accpet_time &lt;= #{accpetEndTime}</if>
+        GROUP BY
+            work_type
+    </select>
+
+    <select id="selectAppCountByStatus" parameterType="map" resultMap="StatusWorkRecordResult">
+        SELECT
+            work_status,
+            count( 1 ) AS total_count
+        FROM
+            `inspection_work_record`
+        WHERE
+            union_id = #{unionId}
+        <if test="accpetBeginTime != null  and accpetBeginTime != ''"> and accpet_time &gt;= #{accpetBeginTime}</if>
+        <if test="accpetEndTime !=null  and accpetEndTime != ''"> and accpet_time &lt;= #{accpetEndTime}</if>
+        GROUP BY
+            work_status
+    </select>
+
+    <select id="selectInspectionWorkRecordList" parameterType="InspectionWorkRecord" resultMap="InspectionWorkRecordResult">
+        <include refid="selectInspectionWorkRecordVo"/>
+        <where>  
+            <if test="workId != null  and workId != ''"> and work_id = #{workId}</if>
+            <if test="workType != null  and workType != ''"> and work_type = #{workType}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="workStatus != null  and workStatus != ''"> and work_status = #{workStatus}</if>
+            <if test="unionId != null "> and union_id = #{unionId}</if>
+            <if test="unionName != null  and unionName != ''"> and union_name like concat('%', #{unionName}, '%')</if>
+            <if test="taskId != null "> and task_id = #{taskId}</if>
+            <if test="taskUserId != null "> and task_user_id = #{taskUserId}</if>
+            <if test="taskUserName != null  and taskUserName != ''"> and task_user_name like concat('%', #{taskUserName}, '%')</if>
+            <if test="accpetUserId != null "> and accpet_user_id = #{accpetUserId}</if>
+            <if test="accpetUserName != null  and accpetUserName != ''"> and accpet_user_name like concat('%', #{accpetUserName}, '%')</if>
+            <if test="troubleInfo != null  and troubleInfo != ''"> and trouble_info = #{troubleInfo}</if>
+            <if test="attachmentOne != null  and attachmentOne != ''"> and attachment_one = #{attachmentOne}</if>
+            <if test="attachmentTwo != null  and attachmentTwo != ''"> and attachment_two = #{attachmentTwo}</if>
+            <if test="accpetTime != null "> and accpet_time = #{accpetTime}</if>
+            <if test="resultInfo != null  and resultInfo != ''"> and result_info = #{resultInfo}</if>
+            <if test="returnAttachmentOne != null  and returnAttachmentOne != ''"> and return_attachment_one = #{returnAttachmentOne}</if>
+            <if test="returnAttachmentTwo != null  and returnAttachmentTwo != ''"> and return_attachment_two = #{returnAttachmentTwo}</if>
+            <if test="dealTime != null  and dealTime != ''"> and deal_time = #{dealTime}</if>
+            <if test="address != null  and address != ''"> and address like concat('%', #{address}, '%')</if>
+            <if test="transferFlag != null  and transferFlag != ''"> and transfer_flag = #{transferFlag}</if>
+            <if test="unionDeptId != null  and unionDeptId != ''"> and union_dept_id = #{unionDeptId}</if>
+            <if test="unionDeptName != null  and unionDeptName != ''"> and union_dept_name = #{unionDeptName}</if>
+            <if test="changeUserId != null  and changeUserId != ''"> and change_user_id = #{changeUserId}</if>
+            <if test="changeUserName != null  and changeUserName != ''"> and change_user_name = #{changeUserName}</if>
+            <if test="changeDeptId != null  and changeDeptId != ''"> and change_dept_id = #{changeDeptId}</if>
+            <if test="changeDeptName != null  and changeDeptName != ''"> and change_dept_name = #{changeDeptName}</if>
+            <if test="queryTransferFlag != null  and queryTransferFlag == '2'.toString() "> and transfer_flag != "1"</if>
+            <if test="queryTransferFlag != null  and queryTransferFlag == '1'.toString() "> and( transfer_flag = "1" or dept_id = #{queryTransferDeptId})</if>
+        </where>
+        order by accpet_time desc
+    </select>
+    
+    <select id="selectInspectionWorkRecordById" parameterType="Long" resultMap="InspectionWorkRecordResult">
+        <include refid="selectInspectionWorkRecordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertInspectionWorkRecord" parameterType="InspectionWorkRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into inspection_work_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="workId != null">work_id,</if>
+            <if test="workType != null">work_type,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="deptName != null">dept_name,</if>
+            <if test="workStatus != null">work_status,</if>
+            <if test="unionId != null">union_id,</if>
+            <if test="unionName != null">union_name,</if>
+            <if test="taskId != null">task_id,</if>
+            <if test="taskUserId != null">task_user_id,</if>
+            <if test="taskUserName != null">task_user_name,</if>
+            <if test="accpetUserId != null">accpet_user_id,</if>
+            <if test="accpetUserName != null">accpet_user_name,</if>
+            <if test="troubleInfo != null">trouble_info,</if>
+            <if test="attachmentOne != null">attachment_one,</if>
+            <if test="attachmentTwo != null">attachment_two,</if>
+            <if test="accpetTime != null">accpet_time,</if>
+            <if test="resultInfo != null">result_info,</if>
+            <if test="returnAttachmentOne != null">return_attachment_one,</if>
+            <if test="returnAttachmentTwo != null">return_attachment_two,</if>
+            <if test="dealTime != null">deal_time,</if>
+            <if test="address != null">address,</if>
+            <if test="transferFlag != null">transfer_flag,</if>
+            <if test="detailPosition != null">detail_position,</if>
+            <if test="unionDeptId != null">union_dept_id,</if>
+            <if test="unionDeptName != null">union_dept_name,</if>
+            <if test="changeUserId != null">change_user_id,</if>
+            <if test="changeUserName != null">change_user_name,</if>
+            <if test="changeDeptId != null">change_dept_id,</if>
+            <if test="changeDeptName != null">change_dept_name,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="workId != null">#{workId},</if>
+            <if test="workType != null">#{workType},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="deptName != null">#{deptName},</if>
+            <if test="workStatus != null">#{workStatus},</if>
+            <if test="unionId != null">#{unionId},</if>
+            <if test="unionName != null">#{unionName},</if>
+            <if test="taskId != null">#{taskId},</if>
+            <if test="taskUserId != null">#{taskUserId},</if>
+            <if test="taskUserName != null">#{taskUserName},</if>
+            <if test="accpetUserId != null">#{accpetUserId},</if>
+            <if test="accpetUserName != null">#{accpetUserName},</if>
+            <if test="troubleInfo != null">#{troubleInfo},</if>
+            <if test="attachmentOne != null">#{attachmentOne},</if>
+            <if test="attachmentTwo != null">#{attachmentTwo},</if>
+            <if test="accpetTime != null">#{accpetTime},</if>
+            <if test="resultInfo != null">#{resultInfo},</if>
+            <if test="returnAttachmentOne != null">#{returnAttachmentOne},</if>
+            <if test="returnAttachmentTwo != null">#{returnAttachmentTwo},</if>
+            <if test="dealTime != null">#{deal_time},</if>
+            <if test="address != null">#{address},</if>
+            <if test="transferFlag != null">#{transferFlag},</if>
+            <if test="detailPosition != null">#{detailPosition},</if>
+            <if test="unionDeptId != null">#{unionDeptId},</if>
+            <if test="unionDeptName != null">#{unionDeptName},</if>
+            <if test="changeUserId != null">#{changeUserId},</if>
+            <if test="changeUserName != null">#{changeUserName},</if>
+            <if test="changeDeptId != null">#{changeDeptId},</if>
+            <if test="changeDeptName != null">#{changeDeptName},</if>
+        </trim>
+    </insert>
+
+    <update id="updateInspectionWorkRecord" parameterType="InspectionWorkRecord">
+        update inspection_work_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="workId != null">work_id = #{workId},</if>
+            <if test="workType != null">work_type = #{workType},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="deptName != null">dept_name = #{deptName},</if>
+            <if test="workStatus != null">work_status = #{workStatus},</if>
+            <if test="unionId != null">union_id = #{unionId},</if>
+            <if test="unionName != null">union_name = #{unionName},</if>
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="taskUserId != null">task_user_id = #{taskUserId},</if>
+            <if test="taskUserName != null">task_user_name = #{taskUserName},</if>
+            <if test="accpetUserId != null">accpet_user_id = #{accpetUserId},</if>
+            <if test="accpetUserName != null">accpet_user_name = #{accpetUserName},</if>
+            <if test="troubleInfo != null">trouble_info = #{troubleInfo},</if>
+            <if test="attachmentOne != null">attachment_one = #{attachmentOne},</if>
+            <if test="attachmentTwo != null">attachment_two = #{attachmentTwo},</if>
+            <if test="accpetTime != null">accpet_time = #{accpetTime},</if>
+            <if test="resultInfo != null">result_info = #{resultInfo},</if>
+            <if test="returnAttachmentOne != null">return_attachment_one = #{returnAttachmentOne},</if>
+            <if test="returnAttachmentTwo != null">return_attachment_two = #{returnAttachmentTwo},</if>
+            <if test="dealTime != null">deal_time = #{dealTime},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="transferFlag != null">transfer_flag = #{transferFlag},</if>
+            <if test="detailPosition != null">detail_position = #{detailPosition},</if>
+            <if test="unionDeptId != null">union_dept_id = #{unionDeptId},</if>
+            <if test="unionDeptName != null">union_dept_name = #{unionDeptName},</if>
+            <if test="changeUserId != null">change_user_id = #{changeUserId},</if>
+            <if test="changeUserName != null">change_user_name = #{changeUserName},</if>
+            <if test="changeDeptId != null">change_dept_id = #{changeDeptId},</if>
+            <if test="changeDeptName != null">change_dept_name = #{changeDeptName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteInspectionWorkRecordById" parameterType="Long">
+        delete from inspection_work_record where id = #{id}
+    </delete>
+
+    <delete id="deleteInspectionWorkRecordByIds" parameterType="String">
+        delete from inspection_work_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.system.mapper.MarketingGardInfoMapper">
+    
+    <resultMap type="MarketingGardInfo" id="MarketingGardInfoResult">
+        <result property="id"    column="id"    />
+        <result property="sysCountyCode"    column="sys_county_code"    />
+        <result property="countyCode"    column="county_code"    />
+        <result property="countyName"    column="county_name"    />
+        <result property="centerCode"    column="center_code"    />
+        <result property="centerName"    column="center_name"    />
+        <result property="townCode"    column="town_code"    />
+        <result property="townName"    column="town_name"    />
+    </resultMap>
+
+    <sql id="selectMarketingGardInfoVo">
+        select id, sys_county_code, county_code, county_name, center_code, center_name, town_code, town_name from marketing_gard_info
+    </sql>
+
+    <select id="selectMarketingGardInfoList" parameterType="MarketingGardInfo" resultMap="MarketingGardInfoResult">
+        <include refid="selectMarketingGardInfoVo"/>
+        <where>  
+            <if test="sysCountyCode != null  and sysCountyCode != ''"> and sys_county_code = #{sysCountyCode}</if>
+            <if test="countyCode != null  and countyCode != ''"> and county_code = #{countyCode}</if>
+            <if test="countyName != null  and countyName != ''"> and county_name like concat('%', #{countyName}, '%')</if>
+            <if test="centerCode != null  and centerCode != ''"> and center_code = #{centerCode}</if>
+            <if test="centerName != null  and centerName != ''"> and center_name like concat('%', #{centerName}, '%')</if>
+            <if test="townCode != null  and townCode != ''"> and town_code = #{townCode}</if>
+            <if test="townName != null  and townName != ''"> and town_name like concat('%', #{townName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectMarketingGardInfoById" parameterType="Long" resultMap="MarketingGardInfoResult">
+        <include refid="selectMarketingGardInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMarketingGardInfo" parameterType="MarketingGardInfo">
+        insert into marketing_gard_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="sysCountyCode != null and sysCountyCode != ''">sys_county_code,</if>
+            <if test="countyCode != null and countyCode != ''">county_code,</if>
+            <if test="countyName != null and countyName != ''">county_name,</if>
+            <if test="centerCode != null and centerCode != ''">center_code,</if>
+            <if test="centerName != null and centerName != ''">center_name,</if>
+            <if test="townCode != null and townCode != ''">town_code,</if>
+            <if test="townName != null and townName != ''">town_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="sysCountyCode != null and sysCountyCode != ''">#{sysCountyCode},</if>
+            <if test="countyCode != null and countyCode != ''">#{countyCode},</if>
+            <if test="countyName != null and countyName != ''">#{countyName},</if>
+            <if test="centerCode != null and centerCode != ''">#{centerCode},</if>
+            <if test="centerName != null and centerName != ''">#{centerName},</if>
+            <if test="townCode != null and townCode != ''">#{townCode},</if>
+            <if test="townName != null and townName != ''">#{townName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMarketingGardInfo" parameterType="MarketingGardInfo">
+        update marketing_gard_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sysCountyCode != null and sysCountyCode != ''">sys_county_code = #{sysCountyCode},</if>
+            <if test="countyCode != null and countyCode != ''">county_code = #{countyCode},</if>
+            <if test="countyName != null and countyName != ''">county_name = #{countyName},</if>
+            <if test="centerCode != null and centerCode != ''">center_code = #{centerCode},</if>
+            <if test="centerName != null and centerName != ''">center_name = #{centerName},</if>
+            <if test="townCode != null and townCode != ''">town_code = #{townCode},</if>
+            <if test="townName != null and townName != ''">town_name = #{townName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMarketingGardInfoById" parameterType="Long">
+        delete from marketing_gard_info where id = #{id}
+    </delete>
+
+    <delete id="deleteMarketingGardInfoByIds" parameterType="String">
+        delete from marketing_gard_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.system.mapper.UnionEnterpriseConfigMapper">
+    
+    <resultMap type="UnionEnterpriseConfig" id="UnionEnterpriseConfigResult">
+        <result property="id"    column="id"    />
+        <result property="unionName"    column="union_name"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="unionUserId"    column="union_user_id"    />
+        <result property="unionUserName"    column="union_user_name"    />
+        <result property="unionUserTel"    column="union_user_tel"    />
+        <result property="remark"    column="remark"    />
+        <result property="unionId"    column="union_id"    />
+    </resultMap>
+
+    <sql id="selectUnionEnterpriseConfigVo">
+        select id, union_name, dept_id, dept_name, union_user_id, union_user_name, union_user_tel, remark, union_id from union_enterprise_config
+    </sql>
+
+    <select id="selectUnionEnterpriseConfigList" parameterType="UnionEnterpriseConfig" resultMap="UnionEnterpriseConfigResult">
+        <include refid="selectUnionEnterpriseConfigVo"/>
+        <where>  
+            <if test="unionName != null  and unionName != ''"> and union_name like concat('%', #{unionName}, '%')</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="unionUserId != null "> and union_user_id = #{unionUserId}</if>
+            <if test="unionUserName != null  and unionUserName != ''"> and union_user_name like concat('%', #{unionUserName}, '%')</if>
+            <if test="unionUserTel != null  and unionUserTel != ''"> and union_user_tel = #{unionUserTel}</if>
+            <if test="unionId != null "> and union_id = #{unionId}</if>
+        </where>
+    </select>
+    
+    <select id="selectUnionEnterpriseConfigById" parameterType="Long" resultMap="UnionEnterpriseConfigResult">
+        <include refid="selectUnionEnterpriseConfigVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertUnionEnterpriseConfig" parameterType="UnionEnterpriseConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into union_enterprise_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="unionName != null">union_name,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="deptName != null">dept_name,</if>
+            <if test="unionUserId != null">union_user_id,</if>
+            <if test="unionUserName != null">union_user_name,</if>
+            <if test="unionUserTel != null">union_user_tel,</if>
+            <if test="remark != null">remark,</if>
+            <if test="unionId != null">union_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="unionName != null">#{unionName},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="deptName != null">#{deptName},</if>
+            <if test="unionUserId != null">#{unionUserId},</if>
+            <if test="unionUserName != null">#{unionUserName},</if>
+            <if test="unionUserTel != null">#{unionUserTel},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="unionId != null">#{unionId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateUnionEnterpriseConfig" parameterType="UnionEnterpriseConfig">
+        update union_enterprise_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="unionName != null">union_name = #{unionName},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="deptName != null">dept_name = #{deptName},</if>
+            <if test="unionUserId != null">union_user_id = #{unionUserId},</if>
+            <if test="unionUserName != null">union_user_name = #{unionUserName},</if>
+            <if test="unionUserTel != null">union_user_tel = #{unionUserTel},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="unionId != null">union_id = #{unionId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteUnionEnterpriseConfigById" parameterType="Long">
+        delete from union_enterprise_config where id = #{id}
+    </delete>
+
+    <delete id="deleteUnionEnterpriseConfigByIds" parameterType="String">
+        delete from union_enterprise_config where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
