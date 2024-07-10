@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.system.mapper.InterviewInfoMapper">
+    
+    <resultMap type="InterviewInfo" id="InterviewInfoResult">
+        <result property="id"    column="id"    />
+        <result property="officerId"    column="officer_id"    />
+        <result property="officerName"    column="officer_name"    />
+        <result property="interviewName"    column="interview_name"    />
+        <result property="interviewPhone"    column="interview_phone"    />
+        <result property="localPoliceStation"    column="local_police_station"    />
+        <result property="belongingPlace"    column="belonging_place"    />
+        <result property="interviewAddr"    column="interview_addr"    />
+        <result property="contradictionFlag"    column="contradiction_flag"    />
+        <result property="contradictionText"    column="contradiction_text"    />
+        <result property="interviewBeginTime"    column="interview_begin_time"    />
+        <result property="interviewEndTime"    column="interview_end_time"    />
+        <result property="attachmentOne"    column="attachment_one"    />
+        <result property="attachmentTwo"    column="attachment_two"    />
+        <result property="satisfyFlag"    column="satisfy_flag"    />
+        <result property="satisfyText"    column="satisfy_text"    />
+        <result property="interviewText"    column="interview_text"    />
+        <result property="tenantFlag"    column="tenant_flag"    />
+        <result property="repeatFlag"    column="repeat_flag"    />
+        <result property="mapAddress"    column="map_address"    />
+        <result property="latitude"    column="latitude"    />
+        <result property="longitude"    column="longitude"    />
+        <result property="tenantName"    column="tenant_name"    />
+        <result property="tenantTel"    column="tenant_tel"    />
+        <result property="tenantWechat"    column="tenant_wechat"    />
+        <result property="deptParentId"    column="dept_parent_id"    />
+    </resultMap>
+
+    <resultMap type="InterviewCountResult" id="InterviewCountResult">
+        <result property="currentRank"    column="current_rank"    />
+        <result property="officerId"    column="officer_id"    />
+        <result property="interviewCount"    column="interview_count"    />
+        <result property="contradictionCount"    column="contradiction_count"    />
+        <result property="satisfyCount"    column="satisfy_count"    />
+    </resultMap>
+
+    <resultMap type="InterviewRankResult" id="InterviewRankResult">
+        <result property="officerId"    column="officer_id"    />
+        <result property="interviewCount"    column="interview_count"    />
+        <result property="contradictionCount"    column="contradiction_count"    />
+        <result property="satisfyCount"    column="satisfy_count"    />
+        <result property="avatar"    column="avatar"    />
+        <result property="nickName"    column="nick_name"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="postId"    column="post_id"    />
+    </resultMap>
+
+    <resultMap id="InterviewInfoTenantInteviewRecordResult" type="InterviewInfo" extends="InterviewInfoResult">
+        <collection property="tenantInteviewRecordList" notNullColumn="sub_id" javaType="java.util.List" resultMap="TenantInteviewRecordResult" />
+    </resultMap>
+
+    <resultMap type="TenantInteviewRecord" id="TenantInteviewRecordResult">
+        <result property="id"    column="sub_id"    />
+        <result property="inteviewId"    column="sub_inteview__id"    />
+        <result property="tenantName"    column="sub_tenant_name"    />
+        <result property="tenantTel"    column="sub_tenant_tel"    />
+        <result property="tenantWechat"    column="sub_tenant_wechat"    />
+    </resultMap>
+
+    <resultMap type="AppCountInfo" id="AppCountInfoResult">
+        <result property="totalCount"    column="total_count"    />
+        <result property="todayCount"    column="today_count"    />
+        <result property="monthCount"    column="month_count"    />
+        <result property="weekCount"    column="week_count"    />
+    </resultMap>
+
+    <sql id="selectInterviewInfoVo">
+        select id, officer_id, officer_name, interview_name, interview_phone, local_police_station, belonging_place, interview_addr, contradiction_flag, contradiction_text, interview_begin_time, interview_end_time, attachment_one, attachment_two, satisfy_flag, satisfy_text, interview_text, tenant_flag,map_address, latitude, longitude, repeat_flag, dept_parent_id from interview_info
+    </sql>
+
+    <sql id="selectInterviewInfoVoAll">
+        select a.id, a.officer_id, a.officer_name, a.interview_name, a.interview_phone, a.local_police_station, a.belonging_place, a.interview_addr, a.contradiction_flag, a.contradiction_text, a.interview_begin_time, a.interview_end_time, a.attachment_one, a.attachment_two, a.satisfy_flag, a.satisfy_text, a.interview_text, a.tenant_flag, a.map_address, a.latitude, a.longitude, a.repeat_flag, a.dept_parent_id, b.tenant_name, b.tenant_tel, b.tenant_wechat from interview_info a
+        left join tenant_inteview_record b on b.inteview__id = a.id
+    </sql>
+
+    <select id="selectInterviewInfoListAll" parameterType="InterviewInfo" resultMap="InterviewInfoResult">
+        <include refid="selectInterviewInfoVoAll"/>
+        <where>
+            <if test="officerName != null  and officerName != ''"> and a.officer_name like concat('%', #{officerName}, '%')</if>
+            <if test="officerId != null  and officerId != ''"> and a.officer_id = #{officerId}</if>
+            <if test="interviewName != null  and interviewName != ''"> and a.interview_name like concat('%', #{interviewName}, '%')</if>
+            <if test="interviewPhone != null  and interviewPhone != ''"> and a.interview_phone = #{interviewPhone}</if>
+            <if test="localPoliceStation != null  and localPoliceStation != ''"> and a.local_police_station = #{localPoliceStation}</if>
+            <if test="belongingPlace != null  and belongingPlace != ''"> and a.belonging_place = #{belongingPlace}</if>
+            <if test="interviewAddr != null  and interviewAddr != ''"> and a.interview_addr = #{interviewAddr}</if>
+            <if test="contradictionFlag != null "> and a.contradiction_flag = #{contradictionFlag}</if>
+            <if test="contradictionText != null  and contradictionText != ''"> and a.contradiction_text = #{contradictionText}</if>
+            <if test="interviewBeginTime != null "> and a.interview_begin_time = #{interviewBeginTime}</if>
+            <if test="interviewEndTime != null "> and a.interview_end_time = #{interviewEndTime}</if>
+            <if test="attachmentOne != null  and attachmentOne != ''"> and  a.attachment_one = #{attachmentOne}</if>
+            <if test="attachmentTwo != null  and attachmentTwo != ''"> and a.attachment_two = #{attachmentTwo}</if>
+            <if test="satisfyFlag != null "> and a.satisfy_flag = #{satisfyFlag}</if>
+            <if test="satisfyText != null  and satisfyText != ''"> and a.satisfy_text = #{satisfyText}</if>
+            <if test="interviewText != null  and interviewText != ''"> and a.interview_text = #{interviewText}</if>
+            <if test="tenantFlag != null "> and a.tenant_flag = #{tenantFlag}</if>
+            <if test="compareBeginTime != null "> and a.interview_begin_time &gt;= #{compareBeginTime}</if>
+            <if test="compareEndTime != null "> and a.interview_begin_time &lt;= #{compareEndTime}</if>
+            <if test="deptParentId != null "> and a.dept_parent_id = #{deptParentId}</if>
+        </where>
+        order by a.interview_begin_time desc
+    </select>
+
+    <select id="selectInterviewInfoList" parameterType="InterviewInfo" resultMap="InterviewInfoResult">
+        <include refid="selectInterviewInfoVo"/>
+        <where>
+            <if test="officerName != null  and officerName != ''"> and officer_name like concat('%', #{officerName}, '%')</if>
+            <if test="officerId != null  and officerId != ''"> and officer_id = #{officerId}</if>
+            <if test="interviewName != null  and interviewName != ''"> and interview_name like concat('%', #{interviewName}, '%')</if>
+            <if test="interviewPhone != null  and interviewPhone != ''"> and interview_phone = #{interviewPhone}</if>
+            <if test="localPoliceStation != null  and localPoliceStation != ''"> and local_police_station = #{localPoliceStation}</if>
+            <if test="belongingPlace != null  and belongingPlace != ''"> and belonging_place = #{belongingPlace}</if>
+            <if test="interviewAddr != null  and interviewAddr != ''"> and interview_addr = #{interviewAddr}</if>
+            <if test="contradictionFlag != null "> and contradiction_flag = #{contradictionFlag}</if>
+            <if test="contradictionText != null  and contradictionText != ''"> and contradiction_text = #{contradictionText}</if>
+            <if test="interviewBeginTime != null "> and interview_begin_time = #{interviewBeginTime}</if>
+            <if test="interviewEndTime != null "> and interview_end_time = #{interviewEndTime}</if>
+            <if test="attachmentOne != null  and attachmentOne != ''"> and  attachment_one = #{attachmentOne}</if>
+            <if test="attachmentTwo != null  and attachmentTwo != ''"> and attachment_two = #{attachmentTwo}</if>
+            <if test="satisfyFlag != null "> and satisfy_flag = #{satisfyFlag}</if>
+            <if test="satisfyText != null  and satisfyText != ''"> and satisfy_text = #{satisfyText}</if>
+            <if test="interviewText != null  and interviewText != ''"> and interview_text = #{interviewText}</if>
+            <if test="tenantFlag != null "> and tenant_flag = #{tenantFlag}</if>
+            <if test="compareBeginTime != null "> and interview_begin_time &gt;= #{compareBeginTime}</if>
+            <if test="compareEndTime != null "> and interview_begin_time &lt;= #{compareEndTime}</if>
+            <if test="deptParentId != null "> and dept_parent_id = #{deptParentId}</if>
+        </where>
+        order by interview_begin_time desc
+    </select>
+
+    <select id="selectAppCountInfo" parameterType="map" resultMap="AppCountInfoResult">
+        SELECT
+        a.total_count,
+        b.today_count,
+        c.month_count,
+        d.week_count
+        FROM
+        ( SELECT count( 1 ) AS total_count FROM interview_info WHERE officer_id = #{officerId} ) a,
+        ( SELECT count( 1 ) AS today_count FROM interview_info WHERE officer_id = #{officerId} AND interview_begin_time &gt;= #{todayBeginTime} AND interview_begin_time &lt;= #{todayEndTime} ) b,
+        ( SELECT count( 1 ) AS month_count FROM interview_info WHERE officer_id = #{officerId} AND interview_begin_time &gt;= #{monthBeginTime} AND interview_begin_time &lt;= #{monthEndTime} ) c,
+        ( SELECT count( 1 ) AS week_count FROM interview_info WHERE officer_id = #{officerId} AND interview_begin_time &gt;= #{weekBeginTime} AND interview_begin_time &lt;= #{monthEndTime} ) d
+    </select>
+
+    <select id="selectRankInterview" parameterType="InterviewInfo" resultMap="InterviewRankResult">
+        select t.*, sys_user.nick_name, sys_user.avatar,sys_user.dept_id, sys_user_post.post_id from ( SELECT
+            officer_id,
+            count( 1 ) AS interview_count,
+            sum( CASE contradiction_flag WHEN 1 THEN 1 ELSE 0 END ) contradiction_count,
+            sum( CASE satisfy_flag WHEN 1 THEN 1 ELSE 0 END ) satisfy_count
+        FROM
+            `interview_info`
+        <where>
+            <if test="compareBeginTime != null "> and interview_begin_time &gt;= #{compareBeginTime}</if>
+            <if test="compareEndTime != null "> and interview_begin_time &lt;= #{compareEndTime}</if>
+        </where>
+        GROUP BY
+            officer_id
+        ORDER BY
+            count( 1 ) DESC) t left join sys_user on t.officer_id = sys_user.user_id
+            left join sys_user_post on t.officer_id = sys_user_post.user_id
+    </select>
+
+    <select id="selectCountInterview" parameterType="map" resultMap="InterviewCountResult">
+        SELECT
+            t.*
+        FROM
+            (
+        SELECT
+            ( @i := @i + 1 ) AS current_rank,
+            a.*
+        FROM
+            (
+        SELECT
+            officer_id,
+            count( 1 ) AS interview_count,
+            sum( CASE contradiction_flag WHEN 1 THEN 1 ELSE 0 END ) contradiction_count,
+            sum( CASE satisfy_flag WHEN 1 THEN 1 ELSE 0 END ) satisfy_count
+        FROM
+            `interview_info`
+        WHERE
+            interview_begin_time LIKE  concat(#{currMouth}, '%')
+        GROUP BY
+            officer_id
+        ORDER BY
+            count( 1 ) DESC
+            ) a,
+            ( SELECT @i := 0 ) b
+            ) t
+        WHERE
+            t.officer_id = #{officerId}
+    </select>
+
+    <select id="selectInterviewInfoById" parameterType="Long" resultMap="InterviewInfoTenantInteviewRecordResult">
+        select a.id, a.officer_id, a.officer_name, a.interview_name, a.interview_phone, a.local_police_station, a.belonging_place, a.interview_addr, a.contradiction_flag, a.contradiction_text, a.interview_begin_time, a.interview_end_time, a.attachment_one, a.attachment_two, a.satisfy_flag, a.satisfy_text, a.interview_text, a.tenant_flag, a.map_address, a.latitude, a.longitude, a.repeat_flag, a.dept_parent_id,
+ b.id as sub_id, b.inteview__id as sub_inteview__id, b.tenant_name as sub_tenant_name, b.tenant_tel as sub_tenant_tel, b.tenant_wechat as sub_tenant_wechat
+        from interview_info a
+        left join tenant_inteview_record b on b.inteview__id = a.id
+        where a.id = #{id}
+    </select>
+
+    <insert id="insertInterviewInfo" parameterType="InterviewInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into interview_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="officerId != null">officer_id,</if>
+            <if test="officerName != null">officer_name,</if>
+            <if test="interviewName != null and interviewName != ''">interview_name,</if>
+            <if test="interviewPhone != null and interviewPhone != ''">interview_phone,</if>
+            <if test="localPoliceStation != null and localPoliceStation != ''">local_police_station,</if>
+            <if test="belongingPlace != null and belongingPlace != ''">belonging_place,</if>
+            <if test="interviewAddr != null">interview_addr,</if>
+            <if test="contradictionFlag != null">contradiction_flag,</if>
+            <if test="contradictionText != null">contradiction_text,</if>
+            <if test="interviewBeginTime != null">interview_begin_time,</if>
+            <if test="interviewEndTime != null">interview_end_time,</if>
+            <if test="attachmentOne != null"> attachment_one,</if>
+            <if test="attachmentTwo != null">attachment_two,</if>
+            <if test="satisfyFlag != null">satisfy_flag,</if>
+            <if test="satisfyText != null">satisfy_text,</if>
+            <if test="interviewText != null">interview_text,</if>
+            <if test="tenantFlag != null">tenant_flag,</if>
+            <if test="mapAddress != null">map_address,</if>
+            <if test="latitude != null">latitude,</if>
+            <if test="longitude != null">longitude,</if>
+            <if test="repeatFlag != null">repeat_flag,</if>
+            <if test="deptParentId != null">dept_parent_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="officerId != null">#{officerId},</if>
+            <if test="officerName != null">#{officerName},</if>
+            <if test="interviewName != null and interviewName != ''">#{interviewName},</if>
+            <if test="interviewPhone != null and interviewPhone != ''">#{interviewPhone},</if>
+            <if test="localPoliceStation != null and localPoliceStation != ''">#{localPoliceStation},</if>
+            <if test="belongingPlace != null and belongingPlace != ''">#{belongingPlace},</if>
+            <if test="interviewAddr != null">#{interviewAddr},</if>
+            <if test="contradictionFlag != null">#{contradictionFlag},</if>
+            <if test="contradictionText != null">#{contradictionText},</if>
+            <if test="interviewBeginTime != null">#{interviewBeginTime},</if>
+            <if test="interviewEndTime != null">#{interviewEndTime},</if>
+            <if test="attachmentOne != null">#{ attachmentOne},</if>
+            <if test="attachmentTwo != null">#{attachmentTwo},</if>
+            <if test="satisfyFlag != null">#{satisfyFlag},</if>
+            <if test="satisfyText != null">#{satisfyText},</if>
+            <if test="interviewText != null">#{interviewText},</if>
+            <if test="tenantFlag != null">#{tenantFlag},</if>
+            <if test="mapAddress != null">#{mapAddress},</if>
+            <if test="latitude != null">#{latitude},</if>
+            <if test="longitude != null">#{longitude},</if>
+            <if test="repeatFlag != null">#{repeatFlag},</if>
+            <if test="deptParentId != null">#{deptParentId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateInterviewInfoRepeatFlag" parameterType="InterviewInfo">
+        update interview_info set repeat_flag = #{repeatFlag} where interview_phone = #{interviewPhone}
+    </update>
+
+    <update id="updateInterviewInfo" parameterType="InterviewInfo">
+        update interview_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="officerId != null">officer_id = #{officerId},</if>
+            <if test="officerName != null">officer_name = #{officerName},</if>
+            <if test="interviewName != null and interviewName != ''">interview_name = #{interviewName},</if>
+            <if test="interviewPhone != null and interviewPhone != ''">interview_phone = #{interviewPhone},</if>
+            <if test="localPoliceStation != null and localPoliceStation != ''">local_police_station = #{localPoliceStation},</if>
+            <if test="belongingPlace != null and belongingPlace != ''">belonging_place = #{belongingPlace},</if>
+            <if test="interviewAddr != null">interview_addr = #{interviewAddr},</if>
+            <if test="contradictionFlag != null">contradiction_flag = #{contradictionFlag},</if>
+            <if test="contradictionText != null">contradiction_text = #{contradictionText},</if>
+            <if test="interviewBeginTime != null">interview_begin_time = #{interviewBeginTime},</if>
+            <if test="interviewEndTime != null">interview_end_time = #{interviewEndTime},</if>
+            <if test="attachmentOne != null">attachment_one = #{attachmentOne},</if>
+            <if test="attachmentTwo != null">attachment_two = #{attachmentTwo},</if>
+            <if test="satisfyFlag != null">satisfy_flag = #{satisfyFlag},</if>
+            <if test="satisfyText != null">satisfy_text = #{satisfyText},</if>
+            <if test="interviewText != null">interview_text = #{interviewText},</if>
+            <if test="tenantFlag != null">tenant_flag = #{tenantFlag},</if>
+            <if test="mapAddress != null">map_address = #{mapAddress},</if>
+            <if test="latitude != null">latitude = #{latitude},</if>
+            <if test="longitude != null">longitude = #{longitude},</if>
+            <if test="repeatFlag != null">repeat_flag = #{repeatFlag},</if>
+            <if test="deptParentId != null">dept_parent_id = #{deptParentId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteInterviewInfoById" parameterType="Long">
+        delete from interview_info where id = #{id}
+    </delete>
+
+    <delete id="deleteInterviewInfoByIds" parameterType="String">
+        delete from interview_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteTenantInteviewRecordByInteviewIds" parameterType="String">
+        delete from tenant_inteview_record where inteview__id in
+        <foreach item="inteviewId" collection="array" open="(" separator="," close=")">
+            #{inteviewId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteTenantInteviewRecordByInteviewId" parameterType="Long">
+        delete from tenant_inteview_record where inteview__id = #{inteviewId}
+    </delete>
+
+    <insert id="batchTenantInteviewRecord">
+        insert into tenant_inteview_record( id, inteview__id, tenant_name, tenant_tel, tenant_wechat) values
+		<foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.id}, #{item.inteviewId}, #{item.tenantName}, #{item.tenantTel}, #{item.tenantWechat})
+        </foreach>
+    </insert>
+</mapper>

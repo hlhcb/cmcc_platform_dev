@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.system.mapper.CmccInterviewNetMapper">
+    
+    <resultMap type="CmccInterviewNet" id="CmccInterviewNetResult">
+        <result property="id"    column="id"    />
+        <result property="interviewId"    column="interview_id"    />
+        <result property="netType"    column="net_type"    />
+        <result property="ispName"    column="isp_name"    />
+        <result property="netSpeed"    column="net_speed"    />
+        <result property="netPrice"    column="net_price"    />
+        <result property="endTime"    column="end_time"    />
+    </resultMap>
+
+    <sql id="selectCmccInterviewNetVo">
+        select id, interview_id, net_type, isp_name, net_speed, net_price, end_time from cmcc_interview_net
+    </sql>
+
+    <select id="selectCmccInterviewNetList" parameterType="CmccInterviewNet" resultMap="CmccInterviewNetResult">
+        <include refid="selectCmccInterviewNetVo"/>
+        <where>  
+            <if test="netType != null  and netType != ''"> and net_type = #{netType}</if>
+            <if test="ispName != null  and ispName != ''"> and isp_name like concat('%', #{ispName}, '%')</if>
+            <if test="netSpeed != null "> and net_speed = #{netSpeed}</if>
+            <if test="netPrice != null "> and net_price = #{netPrice}</if>
+            <if test="endTime != null "> and end_time = #{endTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectCmccInterviewNetById" parameterType="Long" resultMap="CmccInterviewNetResult">
+        <include refid="selectCmccInterviewNetVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCmccInterviewNet" parameterType="CmccInterviewNet" useGeneratedKeys="true" keyProperty="id">
+        insert into cmcc_interview_net
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="interviewId != null">interview_id,</if>
+            <if test="netType != null">net_type,</if>
+            <if test="ispName != null">isp_name,</if>
+            <if test="netSpeed != null">net_speed,</if>
+            <if test="netPrice != null">net_price,</if>
+            <if test="endTime != null">end_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="interviewId != null">#{interviewId},</if>
+            <if test="netType != null">#{netType},</if>
+            <if test="ispName != null">#{ispName},</if>
+            <if test="netSpeed != null">#{netSpeed},</if>
+            <if test="netPrice != null">#{netPrice},</if>
+            <if test="endTime != null">#{endTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCmccInterviewNet" parameterType="CmccInterviewNet">
+        update cmcc_interview_net
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="interviewId != null">interview_id = #{interviewId},</if>
+            <if test="netType != null">net_type = #{netType},</if>
+            <if test="ispName != null">isp_name = #{ispName},</if>
+            <if test="netSpeed != null">net_speed = #{netSpeed},</if>
+            <if test="netPrice != null">net_price = #{netPrice},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCmccInterviewNetById" parameterType="Long">
+        delete from cmcc_interview_net where id = #{id}
+    </delete>
+
+    <delete id="deleteCmccInterviewNetByIds" parameterType="String">
+        delete from cmcc_interview_net where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

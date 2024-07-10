@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.system.mapper.AccpetWorkRecordUserMapper">
+    
+    <resultMap type="AccpetWorkRecordUser" id="AccpetWorkRecordUserResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="nickName"    column="nick_name"    />
+        <result property="dpetId"    column="dpet_id"    />
+        <result property="deptName"    column="dept_name"    />
+    </resultMap>
+
+    <sql id="selectAccpetWorkRecordUserVo">
+        select id, user_id, nick_name, dpet_id, dept_name from accpet_work_record_user
+    </sql>
+
+    <select id="selectAccpetWorkRecordUserList" parameterType="AccpetWorkRecordUser" resultMap="AccpetWorkRecordUserResult">
+        <include refid="selectAccpetWorkRecordUserVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
+            <if test="dpetId != null "> and dpet_id = #{dpetId}</if>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectAccpetWorkRecordUserById" parameterType="Long" resultMap="AccpetWorkRecordUserResult">
+        <include refid="selectAccpetWorkRecordUserVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertAccpetWorkRecordUser" parameterType="AccpetWorkRecordUser" useGeneratedKeys="true" keyProperty="id">
+        insert into accpet_work_record_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="nickName != null">nick_name,</if>
+            <if test="dpetId != null">dpet_id,</if>
+            <if test="deptName != null">dept_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="nickName != null">#{nickName},</if>
+            <if test="dpetId != null">#{dpetId},</if>
+            <if test="deptName != null">#{deptName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAccpetWorkRecordUser" parameterType="AccpetWorkRecordUser">
+        update accpet_work_record_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="nickName != null">nick_name = #{nickName},</if>
+            <if test="dpetId != null">dpet_id = #{dpetId},</if>
+            <if test="deptName != null">dept_name = #{deptName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAccpetWorkRecordUserById" parameterType="Long">
+        delete from accpet_work_record_user where id = #{id}
+    </delete>
+
+    <delete id="deleteAccpetWorkRecordUserByIds" parameterType="String">
+        delete from accpet_work_record_user where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

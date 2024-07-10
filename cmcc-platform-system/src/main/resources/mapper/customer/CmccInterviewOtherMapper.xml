@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.system.mapper.CmccInterviewOtherMapper">
+    
+    <resultMap type="CmccInterviewOther" id="CmccInterviewOtherResult">
+        <result property="id"    column="id"    />
+        <result property="interviewId"    column="interview_id"    />
+        <result property="businessType"    column="business_type"    />
+        <result property="businessDetail"    column="business_detail"    />
+    </resultMap>
+
+    <sql id="selectCmccInterviewOtherVo">
+        select id, interview_id, business_type, business_detail from cmcc_interview_other
+    </sql>
+
+    <select id="selectCmccInterviewOtherList" parameterType="CmccInterviewOther" resultMap="CmccInterviewOtherResult">
+        <include refid="selectCmccInterviewOtherVo"/>
+        <where>  
+            <if test="businessType != null  and businessType != ''"> and business_type = #{businessType}</if>
+            <if test="interviewId != null  and interviewId != ''"> and interview_id = #{interviewId}</if>
+            <if test="businessDetail != null  and businessDetail != ''"> and business_detail = #{businessDetail}</if>
+        </where>
+    </select>
+    
+    <select id="selectCmccInterviewOtherById" parameterType="Long" resultMap="CmccInterviewOtherResult">
+        <include refid="selectCmccInterviewOtherVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCmccInterviewOther" parameterType="CmccInterviewOther" useGeneratedKeys="true" keyProperty="id">
+        insert into cmcc_interview_other
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="interviewId != null">interview_id,</if>
+            <if test="businessType != null">business_type,</if>
+            <if test="businessDetail != null">business_detail,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="interviewId != null">#{interviewId},</if>
+            <if test="businessType != null">#{businessType},</if>
+            <if test="businessDetail != null">#{businessDetail},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCmccInterviewOther" parameterType="CmccInterviewOther">
+        update cmcc_interview_other
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="interviewId != null">interview_id = #{interviewId},</if>
+            <if test="businessType != null">business_type = #{businessType},</if>
+            <if test="businessDetail != null">business_detail = #{businessDetail},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCmccInterviewOtherById" parameterType="Long">
+        delete from cmcc_interview_other where id = #{id}
+    </delete>
+
+    <delete id="deleteCmccInterviewOtherByIds" parameterType="String">
+        delete from cmcc_interview_other where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

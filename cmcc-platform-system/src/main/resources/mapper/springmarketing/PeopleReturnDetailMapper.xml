@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.system.mapper.PeopleReturnDetailMapper">
+    
+    <resultMap type="PeopleReturnDetail" id="PeopleReturnDetailResult">
+        <result property="id"    column="id"    />
+        <result property="provinceName"    column="province_name"    />
+        <result property="cityName"    column="city_name"    />
+        <result property="returnTime"    column="return_time"    />
+        <result property="returnNumber"    column="return_number"    />
+        <result property="returnCounty"    column="return_county"    />
+    </resultMap>
+
+    <resultMap type="TotalReturnPeople" id="TotalReturnPeopleResult">
+        <result property="currMonth"    column="curr_month"    />
+        <result property="totalReturnNumber"  column="total_return_number"/>
+    </resultMap>
+
+
+    <resultMap type="ReturnRankRecord" id="ReturnRankRecordResult">
+        <result property="rank"    column="rank"    />
+        <result property="name"  column="name"/>
+        <result property="total"  column="total"/>
+    </resultMap>
+
+    <resultMap type="ReturnTypeDeatail" id="ReturnTypeDeatailResult">
+        <result property="name"  column="name"/>
+        <result property="value"  column="value"/>
+    </resultMap>
+
+    <resultMap type="MapFlightVo" id="MapFlightVoResult">
+        <result property="name"  column="name"/>
+        <result property="value"  column="value"/>
+    </resultMap>
+
+    <resultMap type="CountyReturnVo" id="CountyReturnVoResult">
+        <result property="countyId"  column="county_id"/>
+        <result property="total"  column="total"/>
+    </resultMap>
+
+    <sql id="selectPeopleReturnDetailVo">
+        select id, province_name, city_name, return_time, return_number, return_county from people_return_detail
+    </sql>
+
+    <select id="selectMapFlightByYear" parameterType="String" resultMap="MapFlightVoResult">
+        select city_name as `name`,ifnull(sum(return_number),0)/10000 as `value` from people_return_detail
+        <where>
+            return_time like concat(#{currYear}, '%')
+        </where>
+         GROUP BY city_name  order by sum(return_number) desc limit 10
+    </select>
+
+    <select id="selectTotalReturnPeopleByYear" parameterType="String" resultMap="TotalReturnPeopleResult">
+        select DATE_FORMAT(return_time, '%m') curr_month , sum(return_number) as total_return_number from people_return_detail
+        <where>
+            return_time like concat(#{currYear}, '%')
+        </where>
+        group by DATE_FORMAT(return_time, '%m') order by DATE_FORMAT(return_time, '%m')
+    </select>
+
+    <select id="selectReturnRankRecord" parameterType="String" resultMap="ReturnRankRecordResult">
+        select province_name `name` , sum(return_number) as total from people_return_detail
+        <where>
+            return_time like concat(#{currYear}, '%')
+        </where>
+        group by province_name order by sum(return_number) desc limit 10
+    </select>
+
+    <select id="selectPeopleCountByDate" parameterType="String" resultType="java.lang.Integer">
+        select ifnull(sum(return_number),0)  as `total` from people_return_detail
+        <where>
+            return_time like concat(#{currYear}, '%')
+        </where>
+    </select>
+
+
+    <select id="selectCountyCountByDate" parameterType="String" resultMap="CountyReturnVoResult">
+        select return_county as county_id, ifnull(sum(return_number),0) as `total` from people_return_detail
+        <where>
+            return_time like concat(#{currYear}, '%')
+        </where>
+         group by return_county order by return_county
+    </select>
+
+
+    <select id="selectReturnTypeDeatail" parameterType="String" resultMap="ReturnTypeDeatailResult">
+        select t.`name`, sum(t.return_number) `value` from (select case province_name when '江西省' then '省内返乡' else '外省返乡' end `name`,  return_number from people_return_detail
+        <where>
+            return_time like concat(#{currYear}, '%')
+        </where>
+         ) t group by t.`name`
+    </select>
+
+    <select id="selectPeopleReturnDetailList" parameterType="PeopleReturnDetail" resultMap="PeopleReturnDetailResult">
+        <include refid="selectPeopleReturnDetailVo"/>
+        <where>  
+            <if test="provinceName != null  and provinceName != ''"> and province_name like concat('%', #{provinceName}, '%')</if>
+            <if test="cityName != null  and cityName != ''"> and city_name like concat('%', #{cityName}, '%')</if>
+            <if test="returnTime != null "> and return_time = #{returnTime}</if>
+            <if test="returnCounty != null  and returnCounty != ''"> and return_county = #{returnCounty}</if>
+        </where>
+    </select>
+    
+    <select id="selectPeopleReturnDetailById" parameterType="String" resultMap="PeopleReturnDetailResult">
+        <include refid="selectPeopleReturnDetailVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPeopleReturnDetail" parameterType="PeopleReturnDetail">
+        insert into people_return_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="provinceName != null">province_name,</if>
+            <if test="cityName != null">city_name,</if>
+            <if test="returnTime != null">return_time,</if>
+            <if test="returnNumber != null">return_number,</if>
+            <if test="returnCounty != null">return_county,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="provinceName != null">#{provinceName},</if>
+            <if test="cityName != null">#{cityName},</if>
+            <if test="returnTime != null">#{returnTime},</if>
+            <if test="returnNumber != null">#{returnNumber},</if>
+            <if test="returnCounty != null">#{returnCounty},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePeopleReturnDetail" parameterType="PeopleReturnDetail">
+        update people_return_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="provinceName != null">province_name = #{provinceName},</if>
+            <if test="cityName != null">city_name = #{cityName},</if>
+            <if test="returnTime != null">return_time = #{returnTime},</if>
+            <if test="returnNumber != null">return_number = #{returnNumber},</if>
+            <if test="returnCounty != null">return_county = #{returnCounty},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePeopleReturnDetailById" parameterType="String">
+        delete from people_return_detail where id = #{id}
+    </delete>
+
+    <delete id="deletePeopleReturnDetailByIds" parameterType="String">
+        delete from people_return_detail where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

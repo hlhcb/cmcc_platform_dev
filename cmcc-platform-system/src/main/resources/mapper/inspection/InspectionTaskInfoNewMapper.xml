@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.system.mapper.InspectionTaskInfoNewMapper">
+    
+    <resultMap type="InspectionTaskInfoNew" id="InspectionTaskInfoNewResult">
+        <result property="id"    column="id"    />
+        <result property="unionId"    column="union_id"    />
+        <result property="unionName"    column="union_name"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="taskType"    column="task_type"    />
+        <result property="taskUserId"    column="task_user_id"    />
+        <result property="taskUserName"    column="task_user_name"    />
+        <result property="taskAddress"    column="task_address"    />
+        <result property="attachmentOne"    column="attachment_one"    />
+        <result property="attachmentTwo"    column="attachment_two"    />
+        <result property="problem1Flag"    column="problem1_flag"    />
+        <result property="recordInfo"    column="record_info"    />
+        <result property="troubleInfo"    column="trouble_info"    />
+        <result property="remark"    column="remark"    />
+        <result property="recordTime"    column="record_time"    />
+        <result property="reportUser"    column="report_user"    />
+        <result property="reportUserId"    column="report_user_id"    />
+        <result property="reportDeptId"    column="report_dept_id"    />
+        <result property="problem2Flag"    column="problem2_flag"    />
+        <result property="problem3Flag"    column="problem3_flag"    />
+        <result property="problem4Flag"    column="problem4_flag"    />
+        <result property="problem5Flag"    column="problem5_flag"    />
+        <result property="problem6Flag"    column="problem6_flag"    />
+        <result property="problem1Add"    column="problem1_add"    />
+        <result property="problem1Info"    column="problem1_info"    />
+        <result property="problem1UrlOne"    column="problem1_url_one"    />
+        <result property="problem1UrlTwo"    column="problem1_url_two"    />
+        <result property="problem2Add"    column="problem2_add"    />
+        <result property="problem2Info"    column="problem2_info"    />
+        <result property="problem2UrlOne"    column="problem2_url_one"    />
+        <result property="problem2UrlTwo"    column="problem2_url_two"    />
+        <result property="problem3Add"    column="problem3_add"    />
+        <result property="problem3Info"    column="problem3_info"    />
+        <result property="problem3UrlOne"    column="problem3_url_one"    />
+        <result property="problem3UrlTwo"    column="problem3_url_two"    />
+        <result property="problem4Add"    column="problem4_add"    />
+        <result property="problem4Info"    column="problem4_info"    />
+        <result property="problem4UrlOne"    column="problem4_url_one"    />
+        <result property="problem4UrlTwo"    column="problem4_url_two"    />
+        <result property="problem5Add"    column="problem5_add"    />
+        <result property="problem5Info"    column="problem5_info"    />
+        <result property="problem5UrlOne"    column="problem5_url_one"    />
+        <result property="problem5UrlTwo"    column="problem5_url_two"    />
+        <result property="problem6Add"    column="problem6_add"    />
+        <result property="problem6Info"    column="problem6_info"    />
+        <result property="problem6UrlOne"    column="problem6_url_one"    />
+        <result property="problem6UrlTwo"    column="problem6_url_two"    />
+    </resultMap>
+
+    <sql id="selectInspectionTaskInfoNewVo">
+        select id, union_id, union_name, dept_id, dept_name, task_type, task_user_id, task_user_name, task_address, attachment_one, attachment_two, problem1_flag, record_info, trouble_info, remark, record_time, report_user, report_user_id, report_dept_id, problem2_flag, problem3_flag, problem4_flag, problem5_flag, problem6_flag, problem1_add, problem1_info, problem1_url_one, problem1_url_two, problem2_add, problem2_info, problem2_url_one, problem2_url_two, problem3_add, problem3_info, problem3_url_one, problem3_url_two, problem4_add, problem4_info, problem4_url_one, problem4_url_two, problem5_add, problem5_info, problem5_url_one, problem5_url_two, problem6_add, problem6_info, problem6_url_one, problem6_url_two from inspection_task_info_new
+    </sql>
+
+    <select id="selectInspectionTaskInfoNewList" parameterType="InspectionTaskInfoNew" resultMap="InspectionTaskInfoNewResult">
+        <include refid="selectInspectionTaskInfoNewVo"/>
+        <where>  
+            <if test="unionId != null "> and union_id = #{unionId}</if>
+            <if test="unionName != null  and unionName != ''"> and union_name like concat('%', #{unionName}, '%')</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="taskType != null "> and task_type = #{taskType}</if>
+            <if test="taskUserId != null "> and task_user_id = #{taskUserId}</if>
+            <if test="taskUserName != null  and taskUserName != ''"> and task_user_name like concat('%', #{taskUserName}, '%')</if>
+            <if test="taskAddress != null  and taskAddress != ''"> and task_address = #{taskAddress}</if>
+            <if test="attachmentOne != null  and attachmentOne != ''"> and attachment_one = #{attachmentOne}</if>
+            <if test="attachmentTwo != null  and attachmentTwo != ''"> and attachment_two = #{attachmentTwo}</if>
+            <if test="problem1Flag != null  and problem1Flag != ''"> and problem1_flag = #{problem1Flag}</if>
+            <if test="recordInfo != null  and recordInfo != ''"> and record_info = #{recordInfo}</if>
+            <if test="troubleInfo != null  and troubleInfo != ''"> and trouble_info = #{troubleInfo}</if>
+            <if test="recordTime != null "> and record_time = #{recordTime}</if>
+            <if test="reportUser != null  and reportUser != ''"> and report_user = #{reportUser}</if>
+            <if test="reportUserId != null "> and report_user_id = #{reportUserId}</if>
+            <if test="reportDeptId != null "> and report_dept_id = #{reportDeptId}</if>
+            <if test="problem2Flag != null  and problem2Flag != ''"> and problem2_flag = #{problem2Flag}</if>
+            <if test="problem3Flag != null  and problem3Flag != ''"> and problem3_flag = #{problem3Flag}</if>
+            <if test="problem4Flag != null  and problem4Flag != ''"> and problem4_flag = #{problem4Flag}</if>
+            <if test="problem5Flag != null  and problem5Flag != ''"> and problem5_flag = #{problem5Flag}</if>
+            <if test="problem6Flag != null  and problem6Flag != ''"> and problem6_flag = #{problem6Flag}</if>
+            <if test="problem1Add != null  and problem1Add != ''"> and problem1_add = #{problem1Add}</if>
+            <if test="problem1Info != null  and problem1Info != ''"> and problem1_info = #{problem1Info}</if>
+            <if test="problem1UrlOne != null  and problem1UrlOne != ''"> and problem1_url_one = #{problem1UrlOne}</if>
+            <if test="problem1UrlTwo != null  and problem1UrlTwo != ''"> and problem1_url_two = #{problem1UrlTwo}</if>
+            <if test="problem2Add != null  and problem2Add != ''"> and problem2_add = #{problem2Add}</if>
+            <if test="problem2Info != null  and problem2Info != ''"> and problem2_info = #{problem2Info}</if>
+            <if test="problem2UrlOne != null  and problem2UrlOne != ''"> and problem2_url_one = #{problem2UrlOne}</if>
+            <if test="problem2UrlTwo != null  and problem2UrlTwo != ''"> and problem2_url_two = #{problem2UrlTwo}</if>
+            <if test="problem3Add != null  and problem3Add != ''"> and problem3_add = #{problem3Add}</if>
+            <if test="problem3Info != null  and problem3Info != ''"> and problem3_info = #{problem3Info}</if>
+            <if test="problem3UrlOne != null  and problem3UrlOne != ''"> and problem3_url_one = #{problem3UrlOne}</if>
+            <if test="problem3UrlTwo != null  and problem3UrlTwo != ''"> and problem3_url_two = #{problem3UrlTwo}</if>
+            <if test="problem4Add != null  and problem4Add != ''"> and problem4_add = #{problem4Add}</if>
+            <if test="problem4Info != null  and problem4Info != ''"> and problem4_info = #{problem4Info}</if>
+            <if test="problem4UrlOne != null  and problem4UrlOne != ''"> and problem4_url_one = #{problem4UrlOne}</if>
+            <if test="problem4UrlTwo != null  and problem4UrlTwo != ''"> and problem4_url_two = #{problem4UrlTwo}</if>
+            <if test="problem5Add != null  and problem5Add != ''"> and problem5_add = #{problem5Add}</if>
+            <if test="problem5Info != null  and problem5Info != ''"> and problem5_info = #{problem5Info}</if>
+            <if test="problem5UrlOne != null  and problem5UrlOne != ''"> and problem5_url_one = #{problem5UrlOne}</if>
+            <if test="problem5UrlTwo != null  and problem5UrlTwo != ''"> and problem5_url_two = #{problem5UrlTwo}</if>
+            <if test="problem6Add != null  and problem6Add != ''"> and problem6_add = #{problem6Add}</if>
+            <if test="problem6Info != null  and problem6Info != ''"> and problem6_info = #{problem6Info}</if>
+            <if test="problem6UrlOne != null  and problem6UrlOne != ''"> and problem6_url_one = #{problem6UrlOne}</if>
+            <if test="problem6UrlTwo != null  and problem6UrlTwo != ''"> and problem6_url_two = #{problem6UrlTwo}</if>
+            <if test="compareBeginTime != null and compareBeginTime != ''"> and record_time &gt;= #{compareBeginTime}</if>
+            <if test="compareEndTime != null and compareEndTime != ''"> and record_time &lt;= #{compareEndTime}</if>
+        </where>
+        order by record_time desc
+    </select>
+    
+    <select id="selectInspectionTaskInfoNewById" parameterType="Long" resultMap="InspectionTaskInfoNewResult">
+        <include refid="selectInspectionTaskInfoNewVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertInspectionTaskInfoNew" parameterType="InspectionTaskInfoNew" useGeneratedKeys="true" keyProperty="id">
+        insert into inspection_task_info_new
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="unionId != null">union_id,</if>
+            <if test="unionName != null">union_name,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="deptName != null">dept_name,</if>
+            <if test="taskType != null">task_type,</if>
+            <if test="taskUserId != null">task_user_id,</if>
+            <if test="taskUserName != null">task_user_name,</if>
+            <if test="taskAddress != null">task_address,</if>
+            <if test="attachmentOne != null">attachment_one,</if>
+            <if test="attachmentTwo != null">attachment_two,</if>
+            <if test="problem1Flag != null">problem1_flag,</if>
+            <if test="recordInfo != null">record_info,</if>
+            <if test="troubleInfo != null">trouble_info,</if>
+            <if test="remark != null">remark,</if>
+            <if test="recordTime != null">record_time,</if>
+            <if test="reportUser != null">report_user,</if>
+            <if test="reportUserId != null">report_user_id,</if>
+            <if test="reportDeptId != null">report_dept_id,</if>
+            <if test="problem2Flag != null">problem2_flag,</if>
+            <if test="problem3Flag != null">problem3_flag,</if>
+            <if test="problem4Flag != null">problem4_flag,</if>
+            <if test="problem5Flag != null">problem5_flag,</if>
+            <if test="problem6Flag != null">problem6_flag,</if>
+            <if test="problem1Add != null">problem1_add,</if>
+            <if test="problem1Info != null">problem1_info,</if>
+            <if test="problem1UrlOne != null">problem1_url_one,</if>
+            <if test="problem1UrlTwo != null">problem1_url_two,</if>
+            <if test="problem2Add != null">problem2_add,</if>
+            <if test="problem2Info != null">problem2_info,</if>
+            <if test="problem2UrlOne != null">problem2_url_one,</if>
+            <if test="problem2UrlTwo != null">problem2_url_two,</if>
+            <if test="problem3Add != null">problem3_add,</if>
+            <if test="problem3Info != null">problem3_info,</if>
+            <if test="problem3UrlOne != null">problem3_url_one,</if>
+            <if test="problem3UrlTwo != null">problem3_url_two,</if>
+            <if test="problem4Add != null">problem4_add,</if>
+            <if test="problem4Info != null">problem4_info,</if>
+            <if test="problem4UrlOne != null">problem4_url_one,</if>
+            <if test="problem4UrlTwo != null">problem4_url_two,</if>
+            <if test="problem5Add != null">problem5_add,</if>
+            <if test="problem5Info != null">problem5_info,</if>
+            <if test="problem5UrlOne != null">problem5_url_one,</if>
+            <if test="problem5UrlTwo != null">problem5_url_two,</if>
+            <if test="problem6Add != null">problem6_add,</if>
+            <if test="problem6Info != null">problem6_info,</if>
+            <if test="problem6UrlOne != null">problem6_url_one,</if>
+            <if test="problem6UrlTwo != null">problem6_url_two,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="unionId != null">#{unionId},</if>
+            <if test="unionName != null">#{unionName},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="deptName != null">#{deptName},</if>
+            <if test="taskType != null">#{taskType},</if>
+            <if test="taskUserId != null">#{taskUserId},</if>
+            <if test="taskUserName != null">#{taskUserName},</if>
+            <if test="taskAddress != null">#{taskAddress},</if>
+            <if test="attachmentOne != null">#{attachmentOne},</if>
+            <if test="attachmentTwo != null">#{attachmentTwo},</if>
+            <if test="problem1Flag != null">#{problem1Flag},</if>
+            <if test="recordInfo != null">#{recordInfo},</if>
+            <if test="troubleInfo != null">#{troubleInfo},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="recordTime != null">#{recordTime},</if>
+            <if test="reportUser != null">#{reportUser},</if>
+            <if test="reportUserId != null">#{reportUserId},</if>
+            <if test="reportDeptId != null">#{reportDeptId},</if>
+            <if test="problem2Flag != null">#{problem2Flag},</if>
+            <if test="problem3Flag != null">#{problem3Flag},</if>
+            <if test="problem4Flag != null">#{problem4Flag},</if>
+            <if test="problem5Flag != null">#{problem5Flag},</if>
+            <if test="problem6Flag != null">#{problem6Flag},</if>
+            <if test="problem1Add != null">#{problem1Add},</if>
+            <if test="problem1Info != null">#{problem1Info},</if>
+            <if test="problem1UrlOne != null">#{problem1UrlOne},</if>
+            <if test="problem1UrlTwo != null">#{problem1UrlTwo},</if>
+            <if test="problem2Add != null">#{problem2Add},</if>
+            <if test="problem2Info != null">#{problem2Info},</if>
+            <if test="problem2UrlOne != null">#{problem2UrlOne},</if>
+            <if test="problem2UrlTwo != null">#{problem2UrlTwo},</if>
+            <if test="problem3Add != null">#{problem3Add},</if>
+            <if test="problem3Info != null">#{problem3Info},</if>
+            <if test="problem3UrlOne != null">#{problem3UrlOne},</if>
+            <if test="problem3UrlTwo != null">#{problem3UrlTwo},</if>
+            <if test="problem4Add != null">#{problem4Add},</if>
+            <if test="problem4Info != null">#{problem4Info},</if>
+            <if test="problem4UrlOne != null">#{problem4UrlOne},</if>
+            <if test="problem4UrlTwo != null">#{problem4UrlTwo},</if>
+            <if test="problem5Add != null">#{problem5Add},</if>
+            <if test="problem5Info != null">#{problem5Info},</if>
+            <if test="problem5UrlOne != null">#{problem5UrlOne},</if>
+            <if test="problem5UrlTwo != null">#{problem5UrlTwo},</if>
+            <if test="problem6Add != null">#{problem6Add},</if>
+            <if test="problem6Info != null">#{problem6Info},</if>
+            <if test="problem6UrlOne != null">#{problem6UrlOne},</if>
+            <if test="problem6UrlTwo != null">#{problem6UrlTwo},</if>
+         </trim>
+    </insert>
+
+    <update id="updateInspectionTaskInfoNew" parameterType="InspectionTaskInfoNew">
+        update inspection_task_info_new
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="unionId != null">union_id = #{unionId},</if>
+            <if test="unionName != null">union_name = #{unionName},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="deptName != null">dept_name = #{deptName},</if>
+            <if test="taskType != null">task_type = #{taskType},</if>
+            <if test="taskUserId != null">task_user_id = #{taskUserId},</if>
+            <if test="taskUserName != null">task_user_name = #{taskUserName},</if>
+            <if test="taskAddress != null">task_address = #{taskAddress},</if>
+            <if test="attachmentOne != null">attachment_one = #{attachmentOne},</if>
+            <if test="attachmentTwo != null">attachment_two = #{attachmentTwo},</if>
+            <if test="problem1Flag != null">problem1_flag = #{problem1Flag},</if>
+            <if test="recordInfo != null">record_info = #{recordInfo},</if>
+            <if test="troubleInfo != null">trouble_info = #{troubleInfo},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="recordTime != null">record_time = #{recordTime},</if>
+            <if test="reportUser != null">report_user = #{reportUser},</if>
+            <if test="reportUserId != null">report_user_id = #{reportUserId},</if>
+            <if test="reportDeptId != null">report_dept_id = #{reportDeptId},</if>
+            <if test="problem2Flag != null">problem2_flag = #{problem2Flag},</if>
+            <if test="problem3Flag != null">problem3_flag = #{problem3Flag},</if>
+            <if test="problem4Flag != null">problem4_flag = #{problem4Flag},</if>
+            <if test="problem5Flag != null">problem5_flag = #{problem5Flag},</if>
+            <if test="problem6Flag != null">problem6_flag = #{problem6Flag},</if>
+            <if test="problem1Add != null">problem1_add = #{problem1Add},</if>
+            <if test="problem1Info != null">problem1_info = #{problem1Info},</if>
+            <if test="problem1UrlOne != null">problem1_url_one = #{problem1UrlOne},</if>
+            <if test="problem1UrlTwo != null">problem1_url_two = #{problem1UrlTwo},</if>
+            <if test="problem2Add != null">problem2_add = #{problem2Add},</if>
+            <if test="problem2Info != null">problem2_info = #{problem2Info},</if>
+            <if test="problem2UrlOne != null">problem2_url_one = #{problem2UrlOne},</if>
+            <if test="problem2UrlTwo != null">problem2_url_two = #{problem2UrlTwo},</if>
+            <if test="problem3Add != null">problem3_add = #{problem3Add},</if>
+            <if test="problem3Info != null">problem3_info = #{problem3Info},</if>
+            <if test="problem3UrlOne != null">problem3_url_one = #{problem3UrlOne},</if>
+            <if test="problem3UrlTwo != null">problem3_url_two = #{problem3UrlTwo},</if>
+            <if test="problem4Add != null">problem4_add = #{problem4Add},</if>
+            <if test="problem4Info != null">problem4_info = #{problem4Info},</if>
+            <if test="problem4UrlOne != null">problem4_url_one = #{problem4UrlOne},</if>
+            <if test="problem4UrlTwo != null">problem4_url_two = #{problem4UrlTwo},</if>
+            <if test="problem5Add != null">problem5_add = #{problem5Add},</if>
+            <if test="problem5Info != null">problem5_info = #{problem5Info},</if>
+            <if test="problem5UrlOne != null">problem5_url_one = #{problem5UrlOne},</if>
+            <if test="problem5UrlTwo != null">problem5_url_two = #{problem5UrlTwo},</if>
+            <if test="problem6Add != null">problem6_add = #{problem6Add},</if>
+            <if test="problem6Info != null">problem6_info = #{problem6Info},</if>
+            <if test="problem6UrlOne != null">problem6_url_one = #{problem6UrlOne},</if>
+            <if test="problem6UrlTwo != null">problem6_url_two = #{problem6UrlTwo},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteInspectionTaskInfoNewById" parameterType="Long">
+        delete from inspection_task_info_new where id = #{id}
+    </delete>
+
+    <delete id="deleteInspectionTaskInfoNewByIds" parameterType="String">
+        delete from inspection_task_info_new where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

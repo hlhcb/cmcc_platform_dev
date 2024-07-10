@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.system.mapper.BelongingPlaceInfoMapper">
+    
+    <resultMap type="BelongingPlaceInfo" id="BelongingPlaceInfoResult">
+        <result property="id"    column="id"    />
+        <result property="localPoliceStationId"    column="local_police_station_id"    />
+        <result property="localPoliceStationName"    column="local_police_station_name"    />
+        <result property="belongingPlaceId"    column="belonging_place_id"    />
+        <result property="belongingPlaceName"    column="belonging_place_name"    />
+        <result property="parentDeptId"    column="parent_dept_id"    />
+    </resultMap>
+
+    <sql id="selectBelongingPlaceInfoVo">
+        select id, local_police_station_id, local_police_station_name, belonging_place_id, belonging_place_name, parent_dept_id from belonging_place_info
+    </sql>
+
+    <select id="selectBelongingPlaceInfoList" parameterType="BelongingPlaceInfo" resultMap="BelongingPlaceInfoResult">
+        <include refid="selectBelongingPlaceInfoVo"/>
+        <where>  
+            <if test="localPoliceStationId != null  and localPoliceStationId != ''"> and local_police_station_id = #{localPoliceStationId}</if>
+            <if test="localPoliceStationName != null  and localPoliceStationName != ''"> and local_police_station_name like concat('%', #{localPoliceStationName}, '%')</if>
+            <if test="belongingPlaceId != null  and belongingPlaceId != ''"> and belonging_place_id = #{belongingPlaceId}</if>
+            <if test="belongingPlaceName != null  and belongingPlaceName != ''"> and belonging_place_name like concat('%', #{belongingPlaceName}, '%')</if>
+            <if test="parentDeptId != null  and parentDeptId != ''"> and parent_dept_id = #{parentDeptId}</if>
+        </where>
+    </select>
+    
+    <select id="selectBelongingPlaceInfoById" parameterType="Long" resultMap="BelongingPlaceInfoResult">
+        <include refid="selectBelongingPlaceInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertBelongingPlaceInfo" parameterType="BelongingPlaceInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into belonging_place_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="localPoliceStationId != null and localPoliceStationId != ''">local_police_station_id,</if>
+            <if test="localPoliceStationName != null and localPoliceStationName != ''">local_police_station_name,</if>
+            <if test="belongingPlaceId != null and belongingPlaceId != ''">belonging_place_id,</if>
+            <if test="belongingPlaceName != null and belongingPlaceName != ''">belonging_place_name,</if>
+            <if test="parentDeptId != null and parentDeptId != ''">parent_dept_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="localPoliceStationId != null and localPoliceStationId != ''">#{localPoliceStationId},</if>
+            <if test="localPoliceStationName != null and localPoliceStationName != ''">#{localPoliceStationName},</if>
+            <if test="belongingPlaceId != null and belongingPlaceId != ''">#{belongingPlaceId},</if>
+            <if test="belongingPlaceName != null and belongingPlaceName != ''">#{belongingPlaceName},</if>
+            <if test="parentDeptId != null and parentDeptId != ''">#{parentDeptId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBelongingPlaceInfo" parameterType="BelongingPlaceInfo">
+        update belonging_place_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="localPoliceStationId != null and localPoliceStationId != ''">local_police_station_id = #{localPoliceStationId},</if>
+            <if test="localPoliceStationName != null and localPoliceStationName != ''">local_police_station_name = #{localPoliceStationName},</if>
+            <if test="belongingPlaceId != null and belongingPlaceId != ''">belonging_place_id = #{belongingPlaceId},</if>
+            <if test="belongingPlaceName != null and belongingPlaceName != ''">belonging_place_name = #{belongingPlaceName},</if>
+            <if test="parentDeptId != null and parentDeptId != ''">parent_dept_id = #{parentDeptId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBelongingPlaceInfoById" parameterType="Long">
+        delete from belonging_place_info where id = #{id}
+    </delete>
+
+    <delete id="deleteBelongingPlaceInfoByIds" parameterType="String">
+        delete from belonging_place_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

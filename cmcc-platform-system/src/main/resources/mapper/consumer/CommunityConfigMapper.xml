@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.system.mapper.CommunityConfigMapper">
+    
+    <resultMap type="CommunityConfig" id="CommunityConfigResult">
+        <result property="id"    column="id"    />
+        <result property="belongingPlace"    column="belonging_place"    />
+        <result property="community"    column="community"    />
+        <result property="deptId"    column="dept_id"    />
+    </resultMap>
+
+    <sql id="selectCommunityConfigVo">
+        select id, belonging_place, community, dept_id from community_config
+    </sql>
+
+    <select id="selectCommunityConfigList" parameterType="CommunityConfig" resultMap="CommunityConfigResult">
+        <include refid="selectCommunityConfigVo"/>
+        <where>  
+            <if test="belongingPlace != null  and belongingPlace != ''"> and belonging_place = #{belongingPlace}</if>
+            <if test="community != null  and community != ''"> and community = #{community}</if>
+            <if test="deptId != null  and deptId != ''"> and dept_id = #{deptId}</if>
+        </where>
+    </select>
+    
+    <select id="selectCommunityConfigById" parameterType="Long" resultMap="CommunityConfigResult">
+        <include refid="selectCommunityConfigVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCommunityConfig" parameterType="CommunityConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into community_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="belongingPlace != null">belonging_place,</if>
+            <if test="community != null and community != ''">community,</if>
+            <if test="deptId != null and deptId != ''">dept_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="belongingPlace != null">#{belongingPlace},</if>
+            <if test="community != null and community != ''">#{community},</if>
+            <if test="deptId != null and deptId != ''">#{deptId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCommunityConfig" parameterType="CommunityConfig">
+        update community_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="belongingPlace != null">belonging_place = #{belongingPlace},</if>
+            <if test="community != null and community != ''">community = #{community},</if>
+            <if test="deptId != null and deptId != ''">dept_id = #{deptId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCommunityConfigById" parameterType="Long">
+        delete from community_config where id = #{id}
+    </delete>
+
+    <delete id="deleteCommunityConfigByIds" parameterType="String">
+        delete from community_config where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

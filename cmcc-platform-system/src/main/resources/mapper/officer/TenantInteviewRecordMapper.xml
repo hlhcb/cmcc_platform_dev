@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.system.mapper.TenantInteviewRecordMapper">
+    
+    <resultMap type="TenantInteviewRecord" id="TenantInteviewRecordResult">
+        <result property="id"    column="id"    />
+        <result property="inteviewId"    column="inteview__id"    />
+        <result property="tenantName"    column="tenant_name"    />
+        <result property="tenantTel"    column="tenant_tel"    />
+        <result property="tenantWechat"    column="tenant_wechat"    />
+    </resultMap>
+
+    <sql id="selectTenantInteviewRecordVo">
+        select id, inteview__id, tenant_name, tenant_tel, tenant_wechat from tenant_inteview_record
+    </sql>
+
+    <select id="selectTenantInteviewRecordList" parameterType="TenantInteviewRecord" resultMap="TenantInteviewRecordResult">
+        <include refid="selectTenantInteviewRecordVo"/>
+        <where>
+            <if test="inteviewId != null  and inteviewId != ''"> and inteview__id =   #{inteviewId} </if>
+            <if test="tenantName != null  and tenantName != ''"> and tenant_name like concat('%', #{tenantName}, '%')</if>
+            <if test="tenantTel != null  and tenantTel != ''"> and tenant_tel = #{tenantTel}</if>
+            <if test="tenantWechat != null  and tenantWechat != ''"> and tenant_wechat = #{tenantWechat}</if>
+        </where>
+    </select>
+    
+    <select id="selectTenantInteviewRecordById" parameterType="Long" resultMap="TenantInteviewRecordResult">
+        <include refid="selectTenantInteviewRecordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTenantInteviewRecord" parameterType="TenantInteviewRecord">
+        insert into tenant_inteview_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="inteviewId != null">inteview__id,</if>
+            <if test="tenantName != null">tenant_name,</if>
+            <if test="tenantTel != null">tenant_tel,</if>
+            <if test="tenantWechat != null">tenant_wechat,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="inteviewId != null">#{inteviewId},</if>
+            <if test="tenantName != null">#{tenantName},</if>
+            <if test="tenantTel != null">#{tenantTel},</if>
+            <if test="tenantWechat != null">#{tenantWechat},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTenantInteviewRecord" parameterType="TenantInteviewRecord">
+        update tenant_inteview_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="inteviewId != null">inteview__id = #{inteviewId},</if>
+            <if test="tenantName != null">tenant_name = #{tenantName},</if>
+            <if test="tenantTel != null">tenant_tel = #{tenantTel},</if>
+            <if test="tenantWechat != null">tenant_wechat = #{tenantWechat},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTenantInteviewRecordById" parameterType="Long">
+        delete from tenant_inteview_record where id = #{id}
+    </delete>
+
+    <delete id="deleteTenantInteviewRecordByIds" parameterType="String">
+        delete from tenant_inteview_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

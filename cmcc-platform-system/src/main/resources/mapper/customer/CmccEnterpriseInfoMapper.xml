@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.system.mapper.CmccEnterpriseInfoMapper">
+    
+    <resultMap type="CmccEnterpriseInfo" id="CmccEnterpriseInfoResult">
+        <result property="id"    column="id"    />
+        <result property="groupId"    column="group_id"    />
+        <result property="enterpriseName"    column="enterprise_name"    />
+        <result property="enterpriseAddr"    column="enterprise_addr"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="customerTel"    column="customer_tel"    />
+        <result property="customerPosition"    column="customer_position"    />
+        <result property="createUserId"    column="create_user_id"    />
+        <result property="createUserName"    column="create_user_name"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateUserId"    column="update_user_id"    />
+        <result property="updateUserName"    column="update_user_name"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="corporation"    column="corporation"    />
+        <result property="enterpriseStatus"    column="enterprise_status"    />
+        <result property="groupName"    column="group_name"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+    </resultMap>
+
+    <sql id="selectCmccEnterpriseInfoVo">
+        select id, group_id, enterprise_name, enterprise_addr, customer_name, customer_tel, customer_position, create_user_id, create_user_name, create_time, update_user_id, update_user_name, update_time, corporation, enterprise_status, group_name, dept_id, dept_name from cmcc_enterprise_info
+    </sql>
+
+    <select id="selectCmccEnterpriseInfoList" parameterType="CmccEnterpriseInfo" resultMap="CmccEnterpriseInfoResult">
+        <include refid="selectCmccEnterpriseInfoVo"/>
+        <where>  
+            <if test="groupId != null "> and group_id = #{groupId}</if>
+            <if test="enterpriseName != null  and enterpriseName != ''"> and enterprise_name like concat('%', #{enterpriseName}, '%')</if>
+            <if test="enterpriseAddr != null  and enterpriseAddr != ''"> and enterprise_addr = #{enterpriseAddr}</if>
+            <if test="customerName != null  and customerName != ''"> and customer_name like concat('%', #{customerName}, '%')</if>
+            <if test="customerTel != null  and customerTel != ''"> and customer_tel = #{customerTel}</if>
+            <if test="customerPosition != null  and customerPosition != ''"> and customer_position = #{customerPosition}</if>
+            <if test="createUserId != null "> and create_user_id = #{createUserId}</if>
+            <if test="createUserName != null  and createUserName != ''"> and create_user_name like concat('%', #{createUserName}, '%')</if>
+            <if test="updateUserId != null "> and update_user_id = #{updateUserId}</if>
+            <if test="updateUserName != null  and updateUserName != ''"> and update_user_name like concat('%', #{updateUserName}, '%')</if>
+            <if test="corporation != null  and corporation != ''"> and corporation = #{corporation}</if>
+            <if test="enterpriseStatus != null  and enterpriseStatus != ''"> and enterprise_status = #{enterpriseStatus}</if>
+            <if test="groupName != null "> and group_name =  like concat('%', #{groupName}, '%')</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="deptName != null "> and dept_name = #{deptName}</if>
+        </where>
+    </select>
+    
+    <select id="selectCmccEnterpriseInfoById" parameterType="Long" resultMap="CmccEnterpriseInfoResult">
+        <include refid="selectCmccEnterpriseInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCmccEnterpriseInfo" parameterType="CmccEnterpriseInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into cmcc_enterprise_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="groupId != null">group_id,</if>
+            <if test="enterpriseName != null">enterprise_name,</if>
+            <if test="enterpriseAddr != null">enterprise_addr,</if>
+            <if test="customerName != null">customer_name,</if>
+            <if test="customerTel != null">customer_tel,</if>
+            <if test="customerPosition != null">customer_position,</if>
+            <if test="createUserId != null">create_user_id,</if>
+            <if test="createUserName != null">create_user_name,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateUserId != null">update_user_id,</if>
+            <if test="updateUserName != null">update_user_name,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="corporation != null">corporation,</if>
+            <if test="enterpriseStatus != null">enterprise_status,</if>
+            <if test="groupName != null">group_name,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="deptName != null">dept_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="groupId != null">#{groupId},</if>
+            <if test="enterpriseName != null">#{enterpriseName},</if>
+            <if test="enterpriseAddr != null">#{enterpriseAddr},</if>
+            <if test="customerName != null">#{customerName},</if>
+            <if test="customerTel != null">#{customerTel},</if>
+            <if test="customerPosition != null">#{customerPosition},</if>
+            <if test="createUserId != null">#{createUserId},</if>
+            <if test="createUserName != null">#{createUserName},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateUserId != null">#{updateUserId},</if>
+            <if test="updateUserName != null">#{updateUserName},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="corporation != null">#{corporation},</if>
+            <if test="enterpriseStatus != null">#{enterpriseStatus},</if>
+            <if test="groupName != null">#{groupName},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="deptName != null">#{deptName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCmccEnterpriseInfo" parameterType="CmccEnterpriseInfo">
+        update cmcc_enterprise_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="groupId != null">group_id = #{groupId},</if>
+            <if test="enterpriseName != null">enterprise_name = #{enterpriseName},</if>
+            <if test="enterpriseAddr != null">enterprise_addr = #{enterpriseAddr},</if>
+            <if test="customerName != null">customer_name = #{customerName},</if>
+            <if test="customerTel != null">customer_tel = #{customerTel},</if>
+            <if test="customerPosition != null">customer_position = #{customerPosition},</if>
+            <if test="createUserId != null">create_user_id = #{createUserId},</if>
+            <if test="createUserName != null">create_user_name = #{createUserName},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateUserId != null">update_user_id = #{updateUserId},</if>
+            <if test="updateUserName != null">update_user_name = #{updateUserName},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="corporation != null">corporation = #{corporation},</if>
+            <if test="enterpriseStatus != null">enterprise_status = #{enterpriseStatus},</if>
+            <if test="groupName != null">group_name = #{groupName},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="deptName != null">dept_name = #{deptName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCmccEnterpriseInfoById" parameterType="Long">
+        delete from cmcc_enterprise_info where id = #{id}
+    </delete>
+
+    <delete id="deleteCmccEnterpriseInfoByIds" parameterType="String">
+        delete from cmcc_enterprise_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

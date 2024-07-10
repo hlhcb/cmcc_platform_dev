@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.system.mapper.CenterRankInfoMapper">
+    
+    <resultMap type="CenterRankInfo" id="CenterRankInfoResult">
+        <result property="id"    column="id"    />
+        <result property="countyId"    column="county_id"    />
+        <result property="countyName"    column="county_name"    />
+        <result property="centerId"    column="center_id"    />
+        <result property="centerName"    column="center_name"    />
+        <result property="townId"    column="town_id"    />
+        <result property="townName"    column="town_name"    />
+        <result property="recordDate"    column="record_date"    />
+        <result property="score"    column="score"    />
+        <result property="rank"    column="rank"    />
+        <result property="marketingType"    column="marketing_type"    />
+        <result property="marketingTypeName"    column="marketing_type_name"    />
+    </resultMap>
+
+    <select id="selectRankList"  parameterType="CenterRankInfo" resultMap="CenterRankInfoResult">
+        select max(county_name) county_name ,center_id, max(center_name) center_name, sum(score) score from center_rank_info
+        <where>
+            <if test="marketingTypeName != null and marketingTypeName != ''">and record_date like concat( #{marketingTypeName}, '%')</if>
+            <if test="recordDate != null "> and record_date = #{recordDate}</if>
+            <if test="marketingType != null  and marketingType != ''"> and marketing_type = #{marketingType}</if>
+        </where>
+        group by center_id
+        order by sum(score) desc
+    </select>
+
+    <sql id="selectCenterRankInfoVo">
+        select id, county_id, county_name, center_id, center_name, town_id, town_name, record_date, score, `rank`, marketing_type, marketing_type_name from center_rank_info
+    </sql>
+
+    <select id="selectCenterRankInfoList" parameterType="CenterRankInfo" resultMap="CenterRankInfoResult">
+        <include refid="selectCenterRankInfoVo"/>
+        <where>  
+            <if test="countyId != null  and countyId != ''"> and county_id = #{countyId}</if>
+            <if test="countyName != null  and countyName != ''"> and county_name = #{countyName}</if>
+            <if test="centerId != null  and centerId != ''"> and center_id = #{centerId}</if>
+            <if test="centerName != null  and centerName != ''"> and center_name like concat('%', #{centerName}, '%')</if>
+            <if test="townId != null  and townId != ''"> and town_id = #{townId}</if>
+            <if test="townName != null  and townName != ''"> and town_name like concat('%', #{townName}, '%')</if>
+            <if test="recordDate != null "> and record_date = #{recordDate}</if>
+            <if test="score != null "> and score = #{score}</if>
+            <if test="rank != null "> and rank = #{rank}</if>
+            <if test="marketingType != null  and marketingType != ''"> and marketing_type = #{marketingType}</if>
+            <if test="marketingTypeName != null  and marketingTypeName != ''"> and marketing_type_name like concat('%', #{marketingTypeName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectCenterRankInfoById" parameterType="String" resultMap="CenterRankInfoResult">
+        <include refid="selectCenterRankInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCenterRankInfo" parameterType="CenterRankInfo">
+        insert into center_rank_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="countyId != null">county_id,</if>
+            <if test="countyName != null">county_name,</if>
+            <if test="centerId != null">center_id,</if>
+            <if test="centerName != null">center_name,</if>
+            <if test="townId != null">town_id,</if>
+            <if test="townName != null">town_name,</if>
+            <if test="recordDate != null">record_date,</if>
+            <if test="score != null">score,</if>
+            <if test="rank != null">rank,</if>
+            <if test="marketingType != null">marketing_type,</if>
+            <if test="marketingTypeName != null">marketing_type_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="countyId != null">#{countyId},</if>
+            <if test="countyName != null">#{countyName},</if>
+            <if test="centerId != null">#{centerId},</if>
+            <if test="centerName != null">#{centerName},</if>
+            <if test="townId != null">#{townId},</if>
+            <if test="townName != null">#{townName},</if>
+            <if test="recordDate != null">#{recordDate},</if>
+            <if test="score != null">#{score},</if>
+            <if test="rank != null">#{rank},</if>
+            <if test="marketingType != null">#{marketingType},</if>
+            <if test="marketingTypeName != null">#{marketingTypeName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCenterRankInfo" parameterType="CenterRankInfo">
+        update center_rank_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="countyId != null">county_id = #{countyId},</if>
+            <if test="countyName != null">county_name = #{countyName},</if>
+            <if test="centerId != null">center_id = #{centerId},</if>
+            <if test="centerName != null">center_name = #{centerName},</if>
+            <if test="townId != null">town_id = #{townId},</if>
+            <if test="townName != null">town_name = #{townName},</if>
+            <if test="recordDate != null">record_date = #{recordDate},</if>
+            <if test="score != null">score = #{score},</if>
+            <if test="rank != null">rank = #{rank},</if>
+            <if test="marketingType != null">marketing_type = #{marketingType},</if>
+            <if test="marketingTypeName != null">marketing_type_name = #{marketingTypeName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCenterRankInfoById" parameterType="String">
+        delete from center_rank_info where id = #{id}
+    </delete>
+
+    <delete id="deleteCenterRankInfoByIds" parameterType="String">
+        delete from center_rank_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
